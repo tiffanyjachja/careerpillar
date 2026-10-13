@@ -27,6 +27,7 @@ You are generating a career document from an engineer's tracker data. The packet
 - Group entries into **three to five themes** by system, surface, or responsibility (not by competency name). Themes are what packets and reviews are organized around; competencies are how the tracker is organized. Reuse theme names consistently across sections.
 - Decide the level claim per entry: use `assessedLevel` when present, else `level`. Keep a list of entries whose self-assessed `level` is above `currentLevel` and lack `assessedLevel`; you will flag them at the end.
 - Note where `impact` has no number and `metrics` is empty.
+- If `careerDirection.values` or `careerDirection.strengths` exist, use the core values in Retention and the forward-looking close, and the strengths' *ask for* and *running hot* lines in Areas for Growth, only where entries support the claim. They are the engineer's own vocabulary, not assessment results; never present them as such.
 
 ## Formats
 

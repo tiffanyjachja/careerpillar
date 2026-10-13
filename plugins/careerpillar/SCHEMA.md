@@ -76,6 +76,14 @@ All skills read and write `~/careerpillar-profile.json`. This file is the single
     ],
     "reflections": { "energy": "...", "week": "...", "influence": "...", "alternatives": "...", "oxygen": "...", "trap": "..." },
                                       // optional. Answers to the six Explore prompts, in the engineer's words. Written by the dashboard.
+    "values": { "top": ["learning", "autonomy", "credit", "community", "impact"], "core": ["credit", "community"],
+                "notTolerated": "Being talked over. Artificial ceilings.", "living": { "credit": { "shows": "...", "slips": "..." } },
+                "stages": {}, "updatedAt": "2026-10-13" },
+                                      // optional. Written by /careerpillar:values and the dashboard. Ids are from compass.js VALUES.
+                                      // `stages` is the dashboard's working state for the sort; preserve it, do not interpret it.
+    "strengths": { "picked": ["starter", "finisher", "spotlight", "contender", "improviser"], "notes": { "starter": "their story" }, "updatedAt": "2026-10-13" },
+                                      // optional. Written by /careerpillar:strengths and the dashboard. Ids are from compass.js STRENGTHS.
+                                      // An informal vocabulary, not assessment results. Never present it as such.
     "updatedAt": "2026-10-13"
   },
 

@@ -35,11 +35,14 @@ Everything stays on your machine. The dashboard keeps data in your browser's loc
 |---|---|
 | `index.html` | Landing page. A scroll-driven tour of the project. |
 | `app.html` | Visual dashboard. Open it in any browser, no server needed. |
-| `plugins/careerpillar/` | Claude Code plugin with eleven skills (`/careerpillar:*`) |
+| `plugins/careerpillar/` | Claude Code plugin with thirteen skills (`/careerpillar:*`) |
 | `plugins/careerpillar/matrix.js` | The default competency matrix, shared by the dashboard and the skills |
 | `plugins/careerpillar/packet-template.md` | Default promotion-packet sections; override with your company's form |
 | `plugins/careerpillar/paths.md` | Shapes of senior and staff work used by the career explorer, with sources |
 | `plugins/careerpillar/paths.js` | The same shapes as data, for the dashboard's Explore page |
+| `plugins/careerpillar/values.md` | The values sort: method, stance, and how to read the result |
+| `plugins/careerpillar/strengths.md` | Twenty plain-language working patterns, with standing and combinations |
+| `plugins/careerpillar/compass.js` | Values and strengths as data, shared by the dashboard and the skills |
 | `plugins/careerpillar/SCHEMA.md` | The profile JSON schema (v2) and compatibility rules |
 
 ## Getting started
@@ -96,7 +99,7 @@ The four stages are also how the tool is organized. Each maps to a handful of sk
 |---|---|---|
 | 🥚 **Egg** | Log it while it's warm | `log`, `backfill` |
 | 🐛 **Caterpillar** | Eat everything, map everything | `status`, `suggest`, `vibe-check` |
-| 🫧 **Chrysalis** | Find your shape | `explore` |
+| 🫧 **Chrysalis** | Find your shape | `explore`, `values`, `strengths` |
 | 🦋 **Butterfly** | Make the case | `export`, `manager-review`, `peer-review`, `peer-feedback` |
 
 ## Skills
@@ -107,6 +110,8 @@ The four stages are also how the tool is organized. Each maps to a handful of sk
 | `/careerpillar:log` | Log a new accomplishment conversationally: real work date, beneficiaries, a number or an explicit "none", stakeholders, evidence links |
 | `/careerpillar:backfill` | Reconstruct history from merged PRs and issues: real dates, one link per piece of evidence, reviewers as stakeholders, confirmed in batches |
 | `/careerpillar:explore` | Career explorer: what kind of senior or staff engineer do you want to become, what that means here, and 90-day experiments to test it |
+| `/careerpillar:values` | Values sort: 35 cards down to the two you would defend when they cost you something, what you do not tolerate, and a living-it behavior for each |
+| `/careerpillar:strengths` | Working strengths: pick five of twenty plain-language patterns, each with a story, a shadow, and what to ask for |
 | `/careerpillar:status` | Competency coverage snapshot and gap analysis toward your target level |
 | `/careerpillar:suggest` | Prioritized advice on what to focus on next: pattern analysis, scope signals, one concrete action |
 | `/careerpillar:export` | Generate a promotion packet (from a pluggable template, with a References section), performance review, or self-review summary |
@@ -181,15 +186,21 @@ Three optional files in your home directory override the defaults. None of them 
 
 ## Career explorer
 
-Most ladders tell you how to reach the next level, not what kind of engineer to become there. The explorer exists for that question, in two places.
+Most ladders tell you how to reach the next level, not what kind of engineer to become there. The explorer exists for that question, in two places, and it comes with two companions: a values sort and a working-strengths picker.
 
 **In the dashboard (Explore page):** reads your logged work and shows where it already points across the four staff archetypes plus breadth-building and management; flags the premature-senior pattern, missing stakeholders, and back-filled dates; lets you open each shape to see the week, where it exists, what it means at your target level quoted from the matrix, what it does not mean, and which of your entries read as that shape; asks six reflection questions saved to your profile; and lets you choose a direction, write a hypothesis, and set 90-day experiments. **Copy for my 1:1** turns it into text to bring to your manager.
 
 **In Claude Code:** `/careerpillar:explore` reads the shape of your logged work, asks what kind of week you want, and gives you a hypothesis about what kind of senior or staff engineer you are becoming, what that means at your target level, what it does not mean, whether the opportunity exists where you are, and two or three 90-day experiments to test it. It draws on Will Larson's staff archetypes, Charity Majors's writing on levels and the premature-senior trap, and Gergely Orosz's career-path writing; sources are listed in `plugins/careerpillar/paths.md`. Staying senior and moving into management are treated as legitimate answers.
 
+**Values.** A narrowing sort of 35 work values: everything that resonates, then ten, then five, then two core values you would defend when they cost you something. Then what you do not tolerate, one behavior that shows you are living each core value, and the early sign you are slipping. The two-value idea is adapted from Brené Brown's exercise; the cards are original. On the dashboard's Explore page and as `/careerpillar:values`.
+
+**Strengths.** Twenty plain-language working patterns in four families (Drive, Influence, Connection, Insight). Pick five with a story each; see what each looks like at its best and running hot, and what to ask for. Your log is checked for each pattern. This is informal coaching material written for this project, not a validated instrument, and it is not affiliated with any commercial strengths assessment. On the Explore page and as `/careerpillar:strengths`.
+
+Both save into `careerDirection` in your profile, and `explore`, `suggest`, and `export` read them.
+
 ## Principles
 
-1. **Start where the person is.** No form that assumes you already know the answer.
+1. **Start where the person is.** No form that assumes you already know the answer. Leadership, in the author's words, is anyone who holds themselves accountable for finding potential in people and processes. The tool is built to find it, not to grade it.
 2. **Adjacent beats aspirational.** The best next step is the one you can take this quarter.
 3. **Receipts or it didn't happen.** Real dates, named stakeholders, a number or an honest "none", a link.
 4. **Senior is a real destination.** Staying senior, going staff, or moving into management all count.

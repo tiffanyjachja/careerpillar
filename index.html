@@ -149,6 +149,25 @@
   footer { text-align: center; padding: 40px 0 60px; color: var(--ink-soft); font-size: .95rem; }
   footer a { font-weight: 800; }
 
+  /* explorers */
+  .explorers { padding: 10vh 0; }
+  .explorers h2 { font-size: clamp(2rem, 5vw, 3.2rem); margin: 0 0 8px; }
+  .explorers .sub { color: var(--ink-soft); margin: 0 0 28px; max-width: 60ch; }
+  .row3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; margin-bottom: 24px; }
+  .xcard { background: var(--card); border: 3px solid var(--ink); border-radius: 24px; padding: 22px; box-shadow: 5px 5px 0 var(--ink); }
+  .xcard .emoji { font-size: 2rem; }
+  .xcard h3 { margin: 6px 0; font-size: 1.5rem; }
+  .xcard p { color: var(--ink-soft); margin: 0 0 12px; font-size: .98rem; }
+  .toy { background: var(--card); border: 3px dashed var(--ink); border-radius: 24px; padding: 22px; }
+  .toy-head { font-family: Fredoka; font-weight: 600; font-size: 1.2rem; margin-bottom: 12px; }
+  .toy-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .toy-chip { font: inherit; font-weight: 800; font-size: .9rem; padding: .45em .9em; border-radius: 999px; border: 3px solid var(--ink); background: var(--cream); color: var(--ink); cursor: pointer; box-shadow: 3px 3px 0 var(--ink); transition: transform .12s; }
+  .toy-chip:hover { transform: translate(-1px,-1px); }
+  .toy-chip.on { background: var(--bubblegum); color: #fff; }
+  .toy-out { margin-top: 14px; font-size: 1.05rem; min-height: 1.6em; }
+  .toy-out b { color: var(--bubblegum-deep); }
+  .toy .hint { font-size: .8rem; color: var(--ink-soft); margin-top: 10px; }
+
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: 0s !important; animation-iteration-count: 1 !important; transition-duration: 0s !important; scroll-behavior: auto !important; }
     .reveal { opacity: 1; transform: none; }
@@ -193,7 +212,7 @@
     <p class="tag">caterpillar today. something with wings later.</p>
     <div class="pills">
       <span class="pill pink">🐛 a career explorer</span>
-      <span class="pill lilac">✨ 11 Claude Code skills</span>
+      <span class="pill lilac">✨ 13 Claude Code skills</span>
       <span class="pill butter">🔒 stays on your machine</span>
     </div>
   </div>
@@ -222,8 +241,8 @@
     <article class="step" data-scene="2">
       <div class="num">stage three · chrysalis</div>
       <h3>Find your shape</h3>
-      <p>Senior is a destination, not a waypoint. The explorer reads the shape of your work, asks what kind of week you want, and hands you a hypothesis plus 90-day experiments to test it. Staying senior and moving into management both count as answers.</p>
-      <div class="cmds"><span class="cmd">/careerpillar:explore</span></div>
+      <p>Senior is a destination, not a waypoint. Three explorers: the shape of the work you want, the two values you would defend when they cost you something, and the five ways you work at your best. Each ends in a hypothesis, an ask for your manager, and 90-day experiments. Staying senior and moving into management both count as answers.</p>
+      <div class="cmds"><span class="cmd">/careerpillar:explore</span><span class="cmd">/careerpillar:values</span><span class="cmd">/careerpillar:strengths</span></div>
     </article>
     <article class="step" data-scene="3">
       <div class="num">stage four · butterfly</div>
@@ -287,14 +306,32 @@
   </div>
 </section>
 
+<section class="explorers wrap" id="explore">
+  <h2 class="reveal">Three ways to find your shape</h2>
+  <p class="sub reveal">Ladders describe populations. These describe you. Each one ends in something you can say to your manager.</p>
+  <div class="row3">
+    <div class="xcard reveal"><div class="emoji">🧭</div><h3>Shapes</h3><p>Four staff archetypes plus the honest alternatives: stay senior, go manage, build breadth. Your log is scored against each, so the read starts from what you actually did.</p><span class="cmd">/careerpillar:explore</span></div>
+    <div class="xcard reveal"><div class="emoji">💎</div><h3>Values</h3><p>Thirty-five cards. Everything that resonates, then ten, then five, then the two you would defend when they cost you something. Plus what you will not tolerate, which is usually the faster way in.</p><span class="cmd">/careerpillar:values</span></div>
+    <div class="xcard reveal"><div class="emoji">⚡</div><h3>Strengths</h3><p>Twenty plain-language working patterns in four families. Pick five, see each at its best and running hot, and learn what to ask for. Written for this project, not a commercial assessment.</p><span class="cmd">/careerpillar:strengths</span></div>
+  </div>
+  <div class="toy reveal">
+    <div class="toy-head">Try it: tap the two you would defend when they cost you something</div>
+    <div class="toy-chips" id="toy-chips" role="group" aria-label="Pick two values"></div>
+    <div class="toy-out" id="toy-out" aria-live="polite">Pick two.</div>
+    <div class="hint">Nothing is saved here. The real sort lives in the dashboard and the skills. Informal coaching material, not a validated instrument.</div>
+  </div>
+</section>
+
 <section class="skills wrap" id="skills">
-  <h2 class="reveal">Eleven little skills, one big glow-up</h2>
+  <h2 class="reveal">Thirteen little skills, one big glow-up</h2>
   <p class="sub reveal">Installed as a Claude Code plugin. Each one is a conversation, not a form.</p>
   <div class="grid">
     <div class="card reveal"><div class="emoji">🌱</div><h4>/careerpillar:load</h4><p>Start or resume. Shows where you left off and what to do next.</p></div>
     <div class="card reveal"><div class="emoji">📝</div><h4>/careerpillar:log</h4><p>Log one accomplishment with a real date, a beneficiary, a number, and evidence links.</p></div>
     <div class="card reveal"><div class="emoji">⏪</div><h4>/careerpillar:backfill</h4><p>Rebuild months of history from merged PRs and issues, confirmed in batches.</p></div>
     <div class="card reveal"><div class="emoji">🧭</div><h4>/careerpillar:explore</h4><p>What kind of senior or staff engineer do you want to be? Hypothesis plus 90-day experiments.</p></div>
+    <div class="card reveal"><div class="emoji">💎</div><h4>/careerpillar:values</h4><p>Thirty-five cards down to the two you would defend when they cost you something.</p></div>
+    <div class="card reveal"><div class="emoji">⚡</div><h4>/careerpillar:strengths</h4><p>Five working patterns, each with a story, a shadow, and what to ask for.</p></div>
     <div class="card reveal"><div class="emoji">📊</div><h4>/careerpillar:status</h4><p>Coverage snapshot and gap analysis toward your target level.</p></div>
     <div class="card reveal"><div class="emoji">💡</div><h4>/careerpillar:suggest</h4><p>What to focus on next, with one concrete action.</p></div>
     <div class="card reveal"><div class="emoji">📦</div><h4>/careerpillar:export</h4><p>Promotion packet, performance review, or self-review from a pluggable template.</p></div>
@@ -379,6 +416,34 @@ claude plugin install careerpillar@careerpillar
         ticking = false;
       });
     }, { passive: true });
+  }
+  // values toy (nothing persisted)
+  var TOY = [
+    ['Learning', 'I need to be learning something or I get restless.'], ['Autonomy', 'Tell me the goal and get out of the way.'],
+    ['Creativity', 'I need room to make something that was not there before.'], ['Community', 'The people are the point.'],
+    ['Credit', 'Credit where it is due. Named, specific, public when it matters.'], ['Winning', 'I measure against others and I want to come out ahead.'],
+    ['Honesty', 'Say the true thing. I can handle it; I cannot handle spin.'], ['Courage', 'I will say the uncomfortable thing in the room, not after.'],
+    ['Impact', 'I need to see that the work changed something for someone.'], ['Teaching', 'I light up when someone gets it because of something I showed them.'],
+    ['Balance', 'Work is one of the things I am, not the only thing.'], ['Calm', 'Urgency should be rare and real, not the default volume.'],
+    ['Mastery', 'I want to be genuinely good at this, not just adequate.'], ['Variety', 'A dynamic week energizes me. Routine drains me.']
+  ];
+  var chips = document.getElementById('toy-chips'), out = document.getElementById('toy-out'), picked = [];
+  if (chips && out) {
+    TOY.forEach(function (v, i) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'toy-chip'; b.textContent = v[0]; b.setAttribute('aria-pressed', 'false');
+      b.addEventListener('click', function () {
+        var k = picked.indexOf(i);
+        if (k >= 0) picked.splice(k, 1); else { if (picked.length === 2) { var dropped = picked.shift(); chips.children[dropped].classList.remove('on'); chips.children[dropped].setAttribute('aria-pressed', 'false'); } picked.push(i); }
+        b.classList.toggle('on', k < 0); b.setAttribute('aria-pressed', String(k < 0));
+        render();
+      });
+      chips.appendChild(b);
+    });
+    function render() {
+      if (picked.length < 2) { out.textContent = picked.length ? 'One more.' : 'Pick two.'; return; }
+      var a = TOY[picked[0]], c = TOY[picked[1]];
+      out.innerHTML = 'You would go to the mat for <b>' + a[0] + '</b> and <b>' + c[0] + '</b>. “' + a[1] + '” “' + c[1] + '” careerpillar turns that into a direction, an ask for your manager, and a 90-day plan.';
+    }
   }
 })();
 </script>

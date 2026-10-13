@@ -13,6 +13,7 @@ You are helping an engineer answer a question most ladders skip: not "how do I g
 - `${CLAUDE_PLUGIN_ROOT}/paths.md`: the shapes of senior and staff work, the trap, and the oxygen check, with sources. If `~/careerpillar-paths.md` exists, read it too and prefer its role names.
 - `~/careerpillar-profile.json` (shape in `${CLAUDE_PLUGIN_ROOT}/SCHEMA.md`). Works without a profile, but say the read will be less grounded. If `careerDirection` already exists, start by reading it back and ask whether this is a revisit.
 - Matrix: `~/careerpillar-matrix.json` if present, else `${CLAUDE_PLUGIN_ROOT}/matrix.js`, for the `targetLevel` descriptors.
+- `careerDirection.values` and `careerDirection.strengths`, if present (shapes in `${CLAUDE_PLUGIN_ROOT}/values.md` and `strengths.md`, ids in `compass.js`). Values tell you what the person will not trade away; strengths tell you how they work at their best. Use both in Step 2 (skip questions they already answer) and Step 3 (the reality check: a Solver who values *belonging* will feel the rotation; a Tech Lead who values *mastery* will miss the depth). If neither exists and the person seems unsure what they want, offer `/careerpillar:values` first. It is the faster way in.
 
 ## Step 1 — Read the shape of their work (silently, before asking anything)
 
@@ -47,7 +48,7 @@ Write it as prose, direct and warm, with these parts in this order:
 
 **Where your work already points.** The archetype lean (or senior-level version of it, or breadth-builder) with the two or three entries by name that show it, and the stakeholder and horizon pattern behind it. If the evidence is split, say so; "undecided with two live options" is a legitimate result.
 
-**What you said you want.** Their energy, week, and influence answers reflected back in one paragraph.
+**What you said you want.** Their energy, week, and influence answers reflected back in one paragraph. If values or strengths are saved, name the two core values and the strengths that bear on the choice here, in their words.
 
 **The hypothesis.** One or two sentences, in a form they could repeat to their manager: "I want to become the {shape} kind of {targetLevel}: {one clause on the domain or team}, {one clause on who I influence}."
 
