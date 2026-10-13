@@ -1,5 +1,15 @@
-node_modules/
+# Tracker data contains real people's performance information. Never commit it.
+*profile*.json
+careerpillar-matrix.json
+eng-tracker-matrix.json
+matrix.local.json
+
+# OS / editor
 .DS_Store
-.env
-.env.*
-dist/
+Thumbs.db
+.vscode/
+.idea/
+
+# Jekyll (GitHub Pages)
+_site/
+.jekyll-cache/

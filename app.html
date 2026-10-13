@@ -1,0 +1,1809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>careerpillar</title>
+<style>
+  /* Light theme, desktop-first. Warm neutrals, one accent, soft tone tints.
+     Tone is never carried by color alone: every status chip has a label. */
+  :root {
+    --fg: #1a1919;
+    --fg2: #5b5a57;
+    --fg3: #8a8884;
+    --line: #e7e5e1;
+    --line-strong: #d6d3cd;
+    --bg: #faf9f7;
+    --card: #ffffff;
+    --well: #f4f3f0;          /* recessed surfaces inside a card */
+    --ink: #2f2d2a;           /* selection pills: warm charcoal, not black */
+    --accent: #4f46e5;
+    --accent-soft: #eceafc;
+    --accent-ink: #3f37c9;
+    --positive: #017647;  --positive-soft: #e6f1ed;
+    --warning: #d98a06;   --warning-soft: #fbf0d8;  --warning-ink: #9c6200;
+    --alert: #c62626;     --alert-soft: #f9e9e9;
+    --info: #1a6fb3;      --info-soft: #e8f2fb;
+    --neutral-soft: #efeeec;
+    --shadow: 0 1px 2px rgba(30, 24, 12, 0.04), 0 10px 30px rgba(30, 24, 12, 0.06);
+    --font: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Helvetica, sans-serif;
+    --mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+    /* Aliases for the earlier palette names still used in inline styles. */
+    --text: var(--fg); --text-dim: var(--fg2); --text-muted: var(--fg3);
+    --surface: var(--card); --surface2: var(--neutral-soft); --surface3: var(--well); --border: var(--line);
+    --cyan: var(--accent); --cyan-dim: var(--accent-ink);
+    --green: var(--positive); --yellow: var(--warning-ink); --red: var(--alert);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { color-scheme: light; -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--bg); color: var(--fg);
+    font-family: var(--font); font-size: 14px; line-height: 1.5; min-height: 100vh;
+  }
+  button { font: inherit; cursor: pointer; }
+  a { color: var(--accent-ink); }
+  code { font-family: var(--mono); font-size: 12px; background: var(--well); padding: 1px 6px; border-radius: 6px; }
+
+  /* ── SETUP SCREEN ── */
+  #setup-screen { display: none; position: fixed; inset: 0; z-index: 150; background: rgba(30, 24, 12, 0.35); align-items: center; justify-content: center; padding: 24px; }
+  #setup-screen.open { display: flex; }
+  .setup-foot { margin-top: 12px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .profile-banner { display: none; align-items: center; gap: 12px; flex-wrap: wrap; padding: 10px 14px; border-radius: 12px; background: var(--accent-soft); color: var(--fg); font-size: 13px; margin-bottom: 20px; }
+  .profile-banner.show { display: flex; }
+  .profile-banner b { font-weight: 700; }
+  .profile-banner .btn { margin-left: auto; }
+  .inline-select {
+    display: inline-block; width: auto; padding: 2px 26px 2px 10px; font-size: 13.5px; font-weight: 700; color: var(--accent-ink);
+    background: var(--accent-soft) url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'10\' height=\'6\' viewBox=\'0 0 10 6\'><path d=\'M1 1l4 4 4-4\' fill=\'none\' stroke=\'%233f37c9\' stroke-width=\'1.6\' stroke-linecap=\'round\'/></svg>") no-repeat right 10px center;
+    border: 1px solid transparent; border-radius: 9999px; appearance: none; -webkit-appearance: none; cursor: pointer; line-height: 1.4; vertical-align: baseline;
+  }
+  .inline-select:hover { border-color: var(--accent); }
+  .inline-select:focus { box-shadow: 0 0 0 3px var(--accent-soft); border-color: var(--accent); }
+  .setup-card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow);
+    padding: 36px 40px 32px; width: 100%; max-width: 460px;
+  }
+  .setup-card .logo { font-size: 17px; font-weight: 700; letter-spacing: -0.2px; margin-bottom: 18px; }
+  .setup-card .logo .accent, .wordmark .accent { color: var(--accent); }
+  .setup-card h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.3px; margin-bottom: 6px; }
+  .setup-card p { color: var(--fg2); margin-bottom: 24px; font-size: 13.5px; }
+  .track-toggle {
+    display: inline-flex; background: var(--well); border: 1px solid var(--line); border-radius: 9999px;
+    padding: 3px; margin-bottom: 18px; gap: 2px;
+  }
+  .track-toggle button {
+    padding: 6px 16px; background: transparent; border: none; border-radius: 9999px;
+    color: var(--fg2); font-size: 13px; font-weight: 600; transition: background .15s, color .15s;
+  }
+  .track-toggle button.active { background: var(--ink); color: #fff; }
+
+  /* ── FORMS ── */
+  .form-group { margin-bottom: 16px; }
+  label {
+    display: block; font-size: 12px; font-weight: 600; color: var(--fg2);
+    letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 6px;
+  }
+  label .hint-text { text-transform: none; letter-spacing: 0; font-weight: 500; margin-left: 6px; }
+  input[type="text"], input[type="date"], input[type="url"], textarea, select {
+    width: 100%; background: var(--card); border: 1px solid var(--line-strong); border-radius: 10px;
+    color: var(--fg); font-family: var(--font); font-size: 14px; padding: 9px 12px; outline: none;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  input::placeholder, textarea::placeholder { color: var(--fg3); }
+  input:focus, textarea:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 8px 16px; border-radius: 9999px; border: 1px solid var(--line-strong);
+    background: var(--card); color: var(--fg); font-size: 13px; font-weight: 600;
+    transition: border-color .15s, background .15s, color .15s;
+  }
+  .btn:hover { border-color: var(--fg2); }
+  .btn-primary { background: var(--ink); color: #fff; border-color: var(--ink); padding: 10px 20px; }
+  .btn-primary:hover { background: #000; border-color: #000; }
+  .setup-card .btn-primary { width: 100%; }
+  .btn-secondary { color: var(--fg2); }
+  .btn-ghost { color: var(--fg2); font-size: 12.5px; padding: 6px 12px; }
+  .btn-ghost:hover { color: var(--fg); border-color: var(--fg2); }
+  .btn-danger { color: var(--alert); border-color: var(--alert); font-size: 12.5px; padding: 6px 12px; }
+  .btn-danger:hover { background: var(--alert-soft); }
+
+  /* ── APP SHELL + TOP NAV ── */
+  #app { display: none; }
+  .shell { max-width: 1200px; margin: 0 auto; padding: 0 32px 64px; }
+  .top {
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    padding: 18px 0 14px; border-bottom: 1px solid var(--line); margin-bottom: 28px;
+  }
+  .wordmark { font-size: 17px; font-weight: 700; letter-spacing: -0.2px; white-space: nowrap; cursor: pointer; }
+  .tabs { display: flex; gap: 2px; margin-left: 4px; }
+  .nav-item {
+    color: var(--fg2); font-weight: 600; font-size: 14px; padding: 6px 14px; border-radius: 9999px;
+    border: 1px solid transparent; background: transparent; transition: color .2s, background .2s; white-space: nowrap;
+  }
+  .nav-item:hover:not(.active) { color: var(--fg); background: var(--neutral-soft); }
+  .nav-item.active { background: var(--ink); color: #fff; }
+  .top-actions { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+  .level-badge {
+    display: inline-flex; align-items: center; gap: 8px; min-height: 24px; padding: 3px 10px; border-radius: 8px;
+    font-size: 12.5px; font-weight: 600; background: var(--accent-soft); color: var(--accent-ink); font-family: var(--mono);
+  }
+  .menu-wrap { position: relative; }
+  .avatar {
+    width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: #fff; background: var(--accent); border: none; padding: 0;
+    box-shadow: 0 0 0 1px rgba(30, 24, 12, 0.14); transition: box-shadow .12s;
+  }
+  .avatar:hover, .avatar[aria-expanded="true"] { box-shadow: 0 0 0 1px rgba(30, 24, 12, 0.14), 0 0 0 4px var(--accent-soft); }
+  .menu {
+    display: none; position: absolute; right: 0; top: calc(100% + 8px); min-width: 240px; z-index: 50;
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); padding: 6px;
+  }
+  .menu.open { display: block; }
+  .menu .menu-head { padding: 10px 12px 8px; border-bottom: 1px solid var(--line); margin-bottom: 4px; }
+  .menu .menu-head .user-name { font-weight: 700; font-size: 14px; }
+  .menu .menu-head .user-level { font-size: 12px; color: var(--fg2); font-family: var(--mono); margin-top: 2px; }
+  .menu .mi {
+    display: flex; width: 100%; text-align: left; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 8px;
+    background: transparent; border: none; color: var(--fg); font-size: 13.5px; font-weight: 500;
+  }
+  .menu .mi:hover { background: var(--neutral-soft); }
+  .menu .mi.danger { color: var(--alert); }
+  .menu .mi .k { color: var(--fg3); width: 16px; text-align: center; font-size: 12px; }
+  .menu .menu-sep { height: 1px; background: var(--line); margin: 4px 6px; }
+
+  /* ── PAGES ── */
+  .page { display: none; }
+  .page.active { display: block; }
+  .page-header { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 22px; }
+  .page-title { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; }
+  .page-subtitle { font-size: 13.5px; color: var(--fg2); margin-top: 3px; max-width: 760px; }
+
+  /* ── CARDS / KPI ── */
+  .stat-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .stat-card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px 16px; box-shadow: var(--shadow); }
+  .stat-card .stat-label { font-size: 13px; color: var(--fg2); font-weight: 600; margin-bottom: 2px; }
+  .stat-card .stat-value { font-size: 40px; font-weight: 600; color: var(--fg); line-height: 1.15; letter-spacing: -0.5px; margin: 2px 0 4px; }
+  .stat-card .stat-sub { font-size: 12.5px; font-weight: 500; color: var(--fg2); }
+  .section-block { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 20px 22px; margin-bottom: 20px; box-shadow: var(--shadow); }
+  .section-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--fg2); margin-bottom: 12px; }
+
+  /* ── BARS ── */
+  .comp-bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .comp-bar-row:last-child { margin-bottom: 0; }
+  .comp-bar-label { font-size: 13px; font-weight: 600; color: var(--fg); width: 180px; flex-shrink: 0; }
+  .comp-bar-track { flex: 1; height: 8px; background: var(--neutral-soft); border-radius: 9999px; overflow: hidden; }
+  .comp-bar-fill { height: 100%; border-radius: 9999px; transition: width .3s ease; }
+  .comp-bar-count { font-size: 12px; font-family: var(--mono); color: var(--fg2); width: 36px; text-align: right; }
+  .bar-green { background: var(--positive); }
+  .bar-yellow { background: var(--warning); }
+  .bar-red { background: var(--alert); }
+  .bar-none { background: var(--neutral-soft); width: 100% !important; }
+
+  /* ── GAP ANALYSIS ── */
+  .gap-item { border-left: 3px solid var(--line-strong); padding: 12px 16px; margin-bottom: 10px; background: var(--well); border-radius: 0 10px 10px 0; }
+  .gap-item.gap-good { border-color: var(--positive); }
+  .gap-item.gap-warn { border-color: var(--warning); }
+  .gap-item.gap-bad { border-color: var(--alert); }
+  .gap-item .gap-category { font-size: 13px; font-weight: 700; margin-bottom: 3px; color: var(--fg); }
+  .gap-item .gap-descriptor { font-size: 12.5px; color: var(--fg2); margin-bottom: 6px; }
+  .gap-item .gap-evidence { font-size: 12.5px; color: var(--fg); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 5px; min-height: 22px; padding: 2px 9px; border-radius: 8px;
+    font-size: 12px; font-weight: 600; white-space: nowrap;
+  }
+  .badge-green { background: var(--positive-soft); color: var(--positive); }
+  .badge-yellow { background: var(--warning-soft); color: var(--warning-ink); }
+  .badge-red { background: var(--alert-soft); color: var(--alert); }
+  .badge-cyan { background: var(--accent-soft); color: var(--accent-ink); }
+  .badge-dim { background: var(--neutral-soft); color: var(--fg2); }
+  .level-chip {
+    font-family: var(--mono); font-size: 11.5px; font-weight: 700; padding: 2px 8px; border-radius: 8px;
+    background: var(--accent-soft); color: var(--accent-ink);
+  }
+
+  /* ── TIMELINE ── */
+  .acc-item { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; margin-bottom: 12px; box-shadow: var(--shadow); }
+  .acc-item-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+  .acc-item-title { font-size: 15px; font-weight: 700; letter-spacing: -0.1px; }
+  .acc-item-date { font-size: 12px; font-family: var(--mono); color: var(--fg3); flex-shrink: 0; margin-top: 3px; }
+  .acc-item-action { font-size: 13.5px; color: var(--fg2); margin-bottom: 8px; }
+  .acc-item-impact { font-size: 13.5px; color: var(--fg); padding: 8px 12px; background: var(--accent-soft); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; margin-bottom: 10px; }
+  .acc-item-meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .acc-item-actions { display: flex; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+  .acc-link { font-size: 12px; color: var(--accent-ink); text-decoration: none; font-weight: 600; }
+  .acc-link:hover { text-decoration: underline; }
+
+  /* ── LOG FORM ── */
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .multi-select-group { background: var(--card); border: 1px solid var(--line-strong); border-radius: 10px; padding: 8px; display: flex; flex-wrap: wrap; gap: 6px; min-height: 42px; }
+  .multi-select-group:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .multi-chip {
+    display: inline-flex; align-items: center; gap: 4px; padding: 4px 11px; border-radius: 9999px; font-size: 12.5px; font-weight: 600;
+    cursor: pointer; user-select: none; border: 1px solid var(--line-strong); background: var(--card); color: var(--fg2); transition: all .1s;
+  }
+  .multi-chip:hover { border-color: var(--fg2); color: var(--fg); }
+  .multi-chip.selected { background: var(--ink); border-color: var(--ink); color: #fff; }
+  .hint-text { font-size: 12px; color: var(--fg3); margin-top: 5px; }
+  .form-divider { border: none; border-top: 1px solid var(--line); margin: 22px 0; }
+
+  /* ── FILTERS ── */
+  .filter-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; padding: 12px 14px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); }
+  .filter-bar select, .filter-bar input { flex: 1; min-width: 140px; padding: 7px 10px; font-size: 13px; }
+  .filter-bar label { display: none; }
+
+  /* ── EXPORT ── */
+  .export-preview {
+    background: var(--well); border: 1px solid var(--line); border-radius: 12px; padding: 20px; font-family: var(--mono); font-size: 12.5px;
+    color: var(--fg); white-space: pre-wrap; line-height: 1.65; max-height: 520px; overflow-y: auto; margin-bottom: 16px;
+  }
+  .export-actions { display: flex; gap: 10px; }
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translate(-50%, 80px); background: var(--ink); color: #fff;
+    padding: 10px 18px; border-radius: 9999px; font-weight: 600; font-size: 13px; opacity: 0; transition: all .25s; z-index: 999; box-shadow: var(--shadow);
+  }
+  .toast.show { transform: translate(-50%, 0); opacity: 1; }
+
+  /* ── MODAL / CONFIRM ── */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(30, 24, 12, 0.35); z-index: 100; align-items: center; justify-content: center; padding: 24px; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 28px; width: 100%; max-width: 640px; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow); }
+  .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+  .modal-title { font-size: 18px; font-weight: 700; }
+  .modal-close { background: transparent; border: none; color: var(--fg2); font-size: 18px; padding: 4px 8px; border-radius: 8px; line-height: 1; }
+  .modal-close:hover { color: var(--fg); background: var(--neutral-soft); }
+  .confirm-dialog { position: fixed; inset: 0; background: rgba(30, 24, 12, 0.35); z-index: 200; display: none; align-items: center; justify-content: center; }
+  .confirm-dialog.open { display: flex; }
+  .confirm-box { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 24px; max-width: 360px; width: 100%; text-align: center; box-shadow: var(--shadow); }
+  .confirm-box h3 { margin-bottom: 10px; font-size: 16px; }
+  .confirm-box p { color: var(--fg2); font-size: 13px; margin-bottom: 20px; }
+  .confirm-box-actions { display: flex; gap: 10px; justify-content: center; }
+  .empty-state { text-align: center; padding: 48px 24px; color: var(--fg3); }
+  .empty-state .empty-icon { font-size: 36px; margin-bottom: 12px; }
+  .empty-state h3 { font-size: 16px; color: var(--fg2); margin-bottom: 8px; }
+  .empty-state p { font-size: 13px; }
+
+  /* ── EXPLORE ── */
+  .shape-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+  .shape-card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; cursor: pointer; transition: border-color .15s, box-shadow .15s; }
+  .shape-card:hover { border-color: var(--fg2); }
+  .shape-card.selected { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+  .shape-card.open { grid-column: 1 / -1; cursor: default; background: var(--card); }
+  .shape-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .shape-name { font-weight: 700; font-size: 15px; }
+  .shape-kind { font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--fg3); }
+  .shape-oneline { color: var(--fg2); font-size: 13.5px; margin-top: 6px; }
+  .shape-lean { margin-top: 10px; font-size: 12px; color: var(--fg3); font-weight: 600; }
+  .shape-lean b { color: var(--accent-ink); font-weight: 700; }
+  .shape-detail { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px 20px; }
+  .shape-detail h4 { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--fg2); margin-bottom: 6px; font-weight: 700; }
+  .shape-detail p, .shape-detail li { font-size: 13.5px; color: var(--fg); line-height: 1.55; }
+  .shape-detail ul { padding-left: 16px; }
+  .shape-detail .matrix-quote { border-left: 3px solid var(--accent); padding: 8px 12px; background: var(--accent-soft); border-radius: 0 8px 8px 0; color: var(--fg); font-size: 13px; margin-top: 6px; }
+  .shape-detail .evidence-list li { color: var(--fg2); }
+  .shape-actions { margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .flag-item { display: flex; gap: 10px; align-items: flex-start; padding: 9px 12px; border-radius: 10px; background: var(--well); font-size: 13px; margin-bottom: 6px; }
+  .flag-item .flag-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 7px; flex: none; }
+  .flag-warn { background: var(--warning-soft); } .flag-warn .flag-dot { background: var(--warning); }
+  .flag-info { background: var(--info-soft); } .flag-info .flag-dot { background: var(--info); }
+  .flag-good { background: var(--positive-soft); } .flag-good .flag-dot { background: var(--positive); }
+  .reflect-q { margin-bottom: 16px; }
+  .reflect-q label { display: block; font-size: 12px; font-weight: 700; color: var(--fg2); margin-bottom: 4px; }
+  .reflect-q .q-text { font-size: 13.5px; color: var(--fg); margin-bottom: 8px; max-width: 820px; }
+  .reflect-q textarea { min-height: 64px; }
+  .exp-row { display: grid; grid-template-columns: 2fr 150px 2fr 36px; gap: 8px; margin-bottom: 8px; align-items: start; }
+  .exp-row input { width: 100%; }
+  .exp-row .btn-x { background: var(--card); border: 1px solid var(--line-strong); color: var(--fg3); border-radius: 10px; height: 38px; }
+  .exp-row .btn-x:hover { border-color: var(--alert); color: var(--alert); }
+  .mismatch-note { padding: 10px 14px; border-radius: 10px; background: var(--warning-soft); color: var(--fg); font-size: 13px; margin-bottom: 14px; }
+  .dir-summary { background: var(--well); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; font-size: 13.5px; }
+  .dir-summary .dir-arch { font-size: 11px; font-weight: 700; letter-spacing: .06em; color: var(--accent-ink); margin-bottom: 4px; }
+  .dir-summary .dir-exp { color: var(--fg2); margin-top: 6px; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) { .stat-cards { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 700px) {
+    .shell { padding: 0 16px 48px; }
+    .top { gap: 10px; }
+    .tabs { order: 3; width: 100%; overflow-x: auto; margin-left: 0; padding-bottom: 2px; }
+    .top-actions { margin-left: auto; }
+    .level-badge { display: none; }
+    .form-row { grid-template-columns: 1fr; }
+    .exp-row { grid-template-columns: 1fr 1fr; }
+    .exp-row .btn-x { grid-column: 2; justify-self: end; }
+    .comp-bar-label { width: 120px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SETUP SCREEN -->
+<div id="setup-screen">
+  <div class="setup-card">
+    <div class="logo">career<span class="accent">pillar</span></div>
+    <h1>Set up your tracker</h1>
+    <p>Log the work, map it to a competency matrix, build the case, and work out what kind of engineer you want to become.</p>
+
+    <div class="form-group">
+      <label>Track</label>
+      <div class="track-toggle">
+        <button id="track-ic" class="active" onclick="selectTrack('IC')">IC Track</button>
+        <button id="track-mgr" onclick="selectTrack('Manager')">Manager Track</button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Your Name</label>
+      <input type="text" id="setup-name" placeholder="e.g. Alex Chen" />
+    </div>
+
+    <div class="form-group">
+      <label>Current Level</label>
+      <select id="setup-current-level" onchange="autoSuggestTarget()"></select>
+    </div>
+
+    <div class="form-group">
+      <label>Target Level</label>
+      <select id="setup-target-level"></select>
+    </div>
+
+    <button class="btn btn-primary" id="setup-save-btn" onclick="startTracking()">Save profile</button>
+    <div class="setup-foot">
+      <span><span style="font-size:12px;color:var(--text-muted);">Have a file? </span>
+      <button class="btn btn-ghost" style="font-size:12px;padding:4px 12px;" onclick="document.getElementById('import-file-input').click()">Import profile</button></span>
+      <button class="btn btn-ghost" style="font-size:12px;padding:4px 12px;" onclick="closeSetup()">Not now</button>
+    </div>
+  </div>
+</div>
+<input type="file" id="import-file-input" accept=".json" style="display:none" onchange="importProfile(event)" />
+<input type="file" id="import-matrix-input" accept=".json" style="display:none" onchange="importMatrix(event)" />
+
+<!-- APP -->
+<div id="app">
+  <div class="shell">
+    <header class="top">
+      <div class="wordmark" onclick="showPage('explore')">career<span class="accent">pillar</span></div>
+      <nav class="tabs" aria-label="Sections">
+        <button class="nav-item active" onclick="showPage('explore')" data-page="explore">Explore</button>
+        <button class="nav-item" onclick="showPage('dashboard')" data-page="dashboard">Dashboard</button>
+        <button class="nav-item" onclick="showPage('log')" data-page="log">Log</button>
+        <button class="nav-item" onclick="showPage('timeline')" data-page="timeline">Timeline</button>
+        <button class="nav-item" onclick="showPage('export')" data-page="export">Export</button>
+      </nav>
+      <div class="top-actions">
+        <span class="level-badge" id="sidebar-level">—</span>
+        <div class="menu-wrap">
+          <button class="avatar" id="avatar-btn" aria-haspopup="menu" aria-expanded="false" onclick="toggleMenu(event)" title="Profile and data">?</button>
+          <div class="menu" id="profile-menu" role="menu">
+            <div class="menu-head">
+              <div class="user-name" id="sidebar-name">—</div>
+              <div class="user-level" id="menu-level">—</div>
+            </div>
+            <button class="mi" role="menuitem" onclick="closeMenu(); openSetup()" id="menu-setup"><span class="k">✎</span> Set up profile</button>
+            <div class="menu-sep"></div>
+            <button class="mi" role="menuitem" onclick="closeMenu(); exportProfile()"><span class="k">↓</span> Export profile JSON</button>
+            <button class="mi" role="menuitem" onclick="closeMenu(); document.getElementById('import-file-input').click()"><span class="k">↑</span> Import profile JSON</button>
+            <div class="menu-sep"></div>
+            <button class="mi" role="menuitem" onclick="closeMenu(); document.getElementById('import-matrix-input').click()" title="Load your company's competency matrix (JSON, same shape as matrix.js)"><span class="k">⇄</span> Import company matrix</button>
+            <button class="mi" role="menuitem" onclick="closeMenu(); resetMatrix()" id="reset-matrix-btn"><span class="k">↺</span> Use default matrix</button>
+            <div class="menu-sep"></div>
+            <button class="mi danger" role="menuitem" onclick="closeMenu(); resetApp()"><span class="k">✕</span> Reset / change profile</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="profile-banner" id="profile-banner">
+      <span>You are exploring with a <b>scratch profile</b> (<span id="banner-levels"></span>). Add your name and real levels when you are ready; nothing you log or decide is lost.</span>
+      <button class="btn btn-ghost" onclick="openSetup()">Set up profile</button>
+    </div>
+
+    <main class="main-content">
+      <!-- DASHBOARD -->
+      <div class="page active" id="page-dashboard">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Dashboard</div>
+            <div class="page-subtitle" id="dash-subtitle">—</div>
+          </div>
+        </div>
+        <div class="stat-cards" id="stat-cards"></div>
+
+        <div class="section-block">
+          <div class="section-title">Career Direction</div>
+          <div id="dash-direction"></div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-title">Competency Coverage</div>
+          <div id="comp-bars"></div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-title">Target Level Gap Analysis — <span id="gap-target-label" style="color:var(--accent-ink);font-weight:700"></span></div>
+          <div id="gap-analysis"></div>
+        </div>
+      </div>
+
+      <!-- LOG FORM -->
+      <div class="page" id="page-log">
+        <div class="page-header">
+          <div>
+            <div class="page-title" id="log-page-title">Log Accomplishment</div>
+            <div class="page-subtitle">Every entry becomes evidence in your promo packet.</div>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Date</label>
+              <input type="date" id="log-date" />
+            </div>
+            <div class="form-group">
+              <label>Title</label>
+              <input type="text" id="log-title" placeholder="e.g. Led migration to new auth system" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>What You Did</label>
+            <textarea id="log-action" rows="3" placeholder="Describe the action you took. Use strong verbs: Led, Designed, Drove, Implemented, Reduced, Improved..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Business Impact</label>
+            <textarea id="log-impact" rows="3" placeholder="Why did this matter? Quantify if possible: reduced latency by 40%, unblocked Q2 OKR, eliminated 6 manual steps..."></textarea>
+          </div>
+
+          <hr class="form-divider">
+
+          <div class="form-group">
+            <label>Competency Categories</label>
+            <div class="multi-select-group" id="comp-chips"></div>
+            <div class="hint-text">Select all that apply</div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Maps to Level</label>
+              <select id="log-level"></select>
+            </div>
+            <div class="form-group">
+              <label>Stakeholders Involved</label>
+              <div style="display:flex;gap:6px;margin-bottom:8px;">
+                <input type="text" id="stakeholder-input" placeholder="Add a person or role…" style="flex:1;font-size:13px;" onkeydown="if(event.key==='Enter'){event.preventDefault();addCustomStakeholder();}" />
+                <button class="btn btn-ghost" style="font-size:12px;padding:6px 12px;white-space:nowrap;" onclick="addCustomStakeholder()">+ Add</button>
+              </div>
+              <div class="multi-select-group" id="stakeholder-chips"></div>
+              <div class="hint-text">Click to select · Type a name to add custom</div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Reference Link (optional)</label>
+              <input type="text" id="log-link" placeholder="https://... (one or more links, separated by spaces)" />
+            </div>
+            <div class="form-group">
+              <label>Tags (comma-separated)</label>
+              <input type="text" id="log-tags" placeholder="e.g. reliability, oncall, migration" />
+            </div>
+          </div>
+
+          <div style="display:flex;gap:10px;margin-top:8px;">
+            <button class="btn btn-primary" id="save-log-btn" onclick="saveAccomplishment()">Save Accomplishment</button>
+            <button class="btn btn-ghost" onclick="cancelEdit()">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TIMELINE -->
+      <div class="page" id="page-timeline">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Timeline</div>
+            <div class="page-subtitle" id="timeline-subtitle">All logged accomplishments</div>
+          </div>
+          <button class="btn btn-primary" style="white-space:nowrap;" onclick="showPage('log')">+ Log New</button>
+        </div>
+
+        <div class="filter-bar">
+          <select id="filter-comp" onchange="renderTimeline()">
+            <option value="">All Competencies</option>
+          </select>
+          <select id="filter-stakeholder" onchange="renderTimeline()">
+            <option value="">All Stakeholders</option>
+          </select>
+          <select id="filter-level" onchange="renderTimeline()">
+            <option value="">All Levels</option>
+          </select>
+          <input type="date" id="filter-from" placeholder="From date" onchange="renderTimeline()" />
+          <input type="date" id="filter-to" placeholder="To date" onchange="renderTimeline()" />
+          <button class="btn btn-ghost" onclick="clearFilters()" style="flex-shrink:0;white-space:nowrap;">Clear</button>
+        </div>
+
+        <div id="timeline-list"></div>
+      </div>
+
+      <!-- EXPORT -->
+      <div class="page" id="page-export">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Export</div>
+            <div class="page-subtitle">Generate a formatted review doc or promo packet.</div>
+          </div>
+        </div>
+
+        <div class="section-block" style="margin-bottom:16px;">
+          <div class="section-title" style="margin-bottom:12px;">Options</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Date Range From</label>
+              <input type="date" id="export-from" onchange="renderExport()" />
+            </div>
+            <div class="form-group">
+              <label>Date Range To</label>
+              <input type="date" id="export-to" onchange="renderExport()" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Format</label>
+            <select id="export-format" onchange="renderExport()">
+              <option value="review">Performance Review</option>
+              <option value="promo">Promotion Packet</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-title" style="margin-bottom:12px;">Preview</div>
+          <div class="export-preview" id="export-preview"></div>
+          <div class="export-actions">
+            <button class="btn btn-primary" onclick="copyExport()">Copy to Clipboard</button>
+            <button class="btn btn-ghost" onclick="downloadExport()">Download .txt</button>
+          </div>
+        </div>
+      </div>
+      <!-- EXPLORE -->
+      <div class="page" id="page-explore">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Explore</div>
+            <div class="page-subtitle">What kind of <select class="inline-select" id="explore-target" onchange="setExploreTarget(this.value)" title="Target level"></select> do you want to become on the <select class="inline-select" id="explore-track" onchange="setExploreTrack(this.value)" title="Track"><option value="IC">IC</option><option value="Manager">manager</option></select> track, and what would that mean here?</div>
+          </div>
+          <button class="btn btn-ghost" style="font-size:12px;" onclick="copyDirection()">Copy for my 1:1</button>
+        </div>
+
+        <div class="stat-cards" id="explore-stats"></div>
+
+        <div class="section-block">
+          <div class="section-title">Where your work already points</div>
+          <div class="hint-text" style="margin-bottom:10px;">Read from your accomplishments: who your stakeholders are, which competencies cluster, and the words you use to describe the work. A lean, not a verdict.</div>
+          <div id="explore-bars"></div>
+          <div id="explore-flags" style="margin-top:12px;"></div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-title">The shapes</div>
+          <div class="hint-text" style="margin-bottom:10px;">Four staff archetypes from Will Larson, plus three paths the sources treat as equally legitimate. Open one to see what it means at your target level here.</div>
+          <div class="shape-grid" id="shape-grid"></div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-title">Reflect</div>
+          <div class="hint-text" style="margin-bottom:10px;">Answer in your own words. Saved as you type, into your profile only.</div>
+          <div id="explore-questions"></div>
+        </div>
+
+        <div class="section-block" id="direction-block">
+          <div class="section-title">Your direction</div>
+          <div id="direction-mismatch"></div>
+          <div class="form-group">
+            <label>Hypothesis <span class="hint-text">one or two sentences you could say to your manager</span></label>
+            <textarea id="dir-hypothesis" rows="2" placeholder="I want to become the ___ kind of IC5: owning ___, influencing ___."></textarea>
+          </div>
+          <div class="form-group">
+            <label>What that means at <span id="dir-level-label"></span>, here</label>
+            <textarea id="dir-meaning" rows="4" placeholder="Pick a shape above and this fills in from the matrix. Edit it until it is true for your team."></textarea>
+          </div>
+          <div class="form-group">
+            <label>Experiments for the next 90 days <span class="hint-text">what, by when, and the signal that tells you it worked</span></label>
+            <div id="exp-rows"></div>
+            <button class="btn btn-ghost" style="font-size:12px;margin-top:6px;" onclick="addExperimentRow()">+ Add experiment</button>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px;">
+            <button class="btn btn-primary" onclick="saveDirection()">Save direction</button>
+            <span class="hint-text" id="dir-saved-note"></span>
+          </div>
+          <div class="hint-text" style="margin-top:14px;">Go deeper with a conversation: run <code>/careerpillar:explore</code> in Claude Code. It reads this page's answers and your entries, asks follow-ups, and checks the direction against the matrix. Sources for the shapes are listed in <code>plugins/careerpillar/paths.md</code>.</div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Edit Accomplishment</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div id="edit-modal-body"></div>
+  </div>
+</div>
+
+<!-- CONFIRM DIALOG -->
+<div class="confirm-dialog" id="confirm-dialog">
+  <div class="confirm-box">
+    <h3>Delete Accomplishment?</h3>
+    <p>This cannot be undone.</p>
+    <div class="confirm-box-actions">
+      <button class="btn btn-danger" onclick="confirmDelete()">Delete</button>
+      <button class="btn btn-ghost" onclick="closeConfirm()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="plugins/careerpillar/matrix.js"></script>
+<script src="plugins/careerpillar/paths.js"></script>
+<script>
+// ─────────────────────────────────────────────
+// DATA MODEL
+// ─────────────────────────────────────────────
+const IC_LEVELS = ['IC2','IC3','IC4','IC5','IC6','IC7','IC8'];
+const MGR_LEVELS = ['M3','M4','M5','M6'];
+
+// Generic level titles. A company matrix file may override them with a
+// top-level "levelNames": { "IC": {...}, "Manager": {...} } object.
+const IC_LEVEL_NAMES = {
+  IC2:'Software Engineer',
+  IC3:'Software Engineer II',
+  IC4:'Senior Software Engineer',
+  IC5:'Staff Software Engineer',
+  IC6:'Senior Staff Engineer',
+  IC7:'Principal Engineer',
+  IC8:'Distinguished Engineer'
+};
+
+const MGR_LEVEL_NAMES = {
+  M3:'Engineering Manager',
+  M4:'Senior Engineering Manager',
+  M5:'Director of Engineering',
+  M6:'Senior Director of Engineering'
+};
+
+const IC_COMPETENCIES = ['Scope','Delivery','Design & Architecture','Collaboration & Citizenship','Process Improvement'];
+const MGR_COMPETENCIES = ['Scope','Delivery','Collaboration & Citizenship','Process Improvement','Technical Strategy','Team Building'];
+
+const STAKEHOLDERS = ['Team','Team Lead','Product Owner','Cross-team','Executive','External'];
+
+// Competency matrix: generic default lives in matrix.js (DEFAULT_MATRIX).
+// A company-specific matrix can be imported via "Import Matrix" in the sidebar;
+// it is stored in this browser only (localStorage) and never leaves your machine.
+const MATRIX_KEY = "engtracker.matrix";
+const MATRIX = loadMatrix();
+if (MATRIX.levelNames) {
+  Object.assign(IC_LEVEL_NAMES, MATRIX.levelNames.IC || {});
+  Object.assign(MGR_LEVEL_NAMES, MATRIX.levelNames.Manager || {});
+}
+
+function isValidMatrix(m) {
+  return m && typeof m === "object" && m.IC && typeof m.IC === "object" && m.Manager && typeof m.Manager === "object";
+}
+
+function loadMatrix() {
+  try {
+    const raw = localStorage.getItem(MATRIX_KEY);
+    if (raw) {
+      const m = JSON.parse(raw);
+      if (isValidMatrix(m)) return m;
+    }
+  } catch(e) {}
+  return DEFAULT_MATRIX;
+}
+
+function importMatrix(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const m = JSON.parse(e.target.result);
+      if (!isValidMatrix(m)) {
+        alert("Invalid matrix file. Expected { IC: {...}, Manager: {...} } — see plugins/careerpillar/matrix.js for the shape.");
+        return;
+      }
+      delete m._comment;
+      localStorage.setItem(MATRIX_KEY, JSON.stringify(m));
+      location.reload();
+    } catch(err) {
+      alert("Could not read the file. Make sure it is valid JSON.");
+    }
+    event.target.value = "";
+  };
+  reader.readAsText(file);
+}
+
+function syncMatrixButtons() {
+  const b = document.getElementById("reset-matrix-btn");
+  if (b) b.style.display = localStorage.getItem(MATRIX_KEY) ? "" : "none";
+}
+document.addEventListener("DOMContentLoaded", syncMatrixButtons);
+
+function resetMatrix() {
+  if (!confirm("Remove the imported matrix and go back to the built-in default?")) return;
+  localStorage.removeItem(MATRIX_KEY);
+  location.reload();
+}
+
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+let state = {
+  profile: null,
+  accomplishments: [],
+  customStakeholders: []
+};
+
+let editingId = null;
+let deleteTargetId = null;
+let selectedCompetencies = [];
+let selectedStakeholders = [];
+
+// ─────────────────────────────────────────────
+// PERSISTENCE
+// ─────────────────────────────────────────────
+function loadState() {
+  try {
+    const raw = localStorage.getItem('engtracker') || localStorage.getItem('yengtracker');
+    if (raw) {
+      state = normalizeState(JSON.parse(raw));
+    }
+  } catch(e) {}
+}
+
+// Schema v2 compatibility (see plugins/careerpillar/SCHEMA.md).
+// Skills may write links[] and loggedAt; the dashboard keeps the legacy string link in sync.
+function parseLinks(str) {
+  return String(str || "").split(/[\s,]+/).filter(s => /^https?:\/\//i.test(s))
+    .map(url => ({ url, label: labelForUrl(url) }));
+}
+function labelForUrl(url) {
+  try {
+    const u = new URL(url); const parts = u.pathname.split("/").filter(Boolean);
+    const i = parts.findIndex(p => p === "pull" || p === "issues" || p === "issue");
+    if (i >= 0 && parts[i+1]) return (parts[i] === "pull" ? "PR " : "Issue ") + parts[i+1];
+    return u.hostname.replace(/^www\./, "") + (parts.length ? "/" + parts[parts.length-1] : "");
+  } catch(e) { return url; }
+}
+function normalizeState(s) {
+  if (!s) return s;
+  if (!Array.isArray(s.accomplishments)) s.accomplishments = [];
+  if (!Array.isArray(s.customStakeholders)) s.customStakeholders = [];
+  if (!Array.isArray(s.peerFeedback)) s.peerFeedback = [];
+  s.accomplishments.forEach(a => {
+    if ((!a.links || !a.links.length) && a.link) a.links = parseLinks(a.link);
+    if (!Array.isArray(a.links)) a.links = [];
+    if (a.links.length) a.link = a.links[0].url;
+    if (!Array.isArray(a.tags)) a.tags = [];
+    if (!Array.isArray(a.stakeholders)) a.stakeholders = [];
+  });
+  s.schemaVersion = 2;
+  return s;
+}
+
+function saveState() {
+  localStorage.setItem('engtracker', JSON.stringify(state));
+}
+
+// ─────────────────────────────────────────────
+// SETUP
+// ─────────────────────────────────────────────
+let currentTrack = 'IC';
+
+function selectTrack(track) {
+  currentTrack = track;
+  document.getElementById('track-ic').classList.toggle('active', track === 'IC');
+  document.getElementById('track-mgr').classList.toggle('active', track === 'Manager');
+  populateLevelSelects();
+}
+
+function populateLevelSelects() {
+  const levels = currentTrack === 'IC' ? IC_LEVELS : MGR_LEVELS;
+  const names = currentTrack === 'IC' ? IC_LEVEL_NAMES : MGR_LEVEL_NAMES;
+  const cur = document.getElementById('setup-current-level');
+  const tgt = document.getElementById('setup-target-level');
+  cur.innerHTML = levels.map(l => `<option value="${l}">${l} — ${names[l]}</option>`).join('');
+  autoSuggestTarget();
+}
+
+function autoSuggestTarget() {
+  const levels = currentTrack === 'IC' ? IC_LEVELS : MGR_LEVELS;
+  const names = currentTrack === 'IC' ? IC_LEVEL_NAMES : MGR_LEVEL_NAMES;
+  const cur = document.getElementById('setup-current-level').value;
+  const tgt = document.getElementById('setup-target-level');
+  const idx = levels.indexOf(cur);
+  const available = levels.slice(idx + 1);
+  tgt.innerHTML = available.map(l => `<option value="${l}">${l} — ${names[l]}</option>`).join('');
+}
+
+function startTracking() {
+  const name = document.getElementById('setup-name').value.trim();
+  const cur = document.getElementById('setup-current-level').value;
+  const tgt = document.getElementById('setup-target-level').value;
+  if (!name) { alert('Enter your name.'); return; }
+  if (!tgt) { alert('Select a target level.'); return; }
+  state.profile = { ...(state.profile || {}), name, currentLevel: cur, targetLevel: tgt, track: currentTrack };
+  delete state.profile.provisional;
+  saveState();
+  closeSetup();
+  initApp();
+  showToast('Profile saved.');
+}
+
+// ─────────────────────────────────────────────
+// APP INIT
+// ─────────────────────────────────────────────
+function initApp() {
+  document.getElementById('app').style.display = 'block';
+
+  const p = state.profile;
+  document.getElementById('sidebar-name').textContent = p.name || 'Guest';
+  document.getElementById('sidebar-level').textContent = `${p.currentLevel} → ${p.targetLevel}`;
+  document.getElementById('menu-setup').innerHTML = p.provisional ? '<span class="k">✎</span> Set up profile' : '<span class="k">✎</span> Edit profile';
+  document.getElementById('banner-levels').textContent = `${p.track} track, ${p.currentLevel} → ${p.targetLevel}`;
+
+  initLogForm();
+  document.getElementById('menu-level').textContent = `${p.currentLevel} → ${p.targetLevel} · ${p.track} track`;
+  document.getElementById('avatar-btn').textContent = p.name ? p.name.trim().charAt(0).toUpperCase() : '•';
+  initFilters();
+  renderDashboard();
+  renderExport();
+  const hashPage = (location.hash || '').slice(1);
+  showPage(hashPage && document.getElementById('page-' + hashPage) ? hashPage : 'explore');
+}
+
+function openSetup() {
+  const p = state.profile || {};
+  currentTrack = p.track || 'IC';
+  document.getElementById('track-ic').classList.toggle('active', currentTrack === 'IC');
+  document.getElementById('track-mgr').classList.toggle('active', currentTrack === 'Manager');
+  populateLevelSelects();
+  document.getElementById('setup-name').value = p.name || '';
+  if (p.currentLevel) { document.getElementById('setup-current-level').value = p.currentLevel; autoSuggestTarget(); }
+  if (p.targetLevel) document.getElementById('setup-target-level').value = p.targetLevel;
+  document.getElementById('setup-save-btn').textContent = p.provisional ? 'Save profile' : 'Update profile';
+  document.getElementById('setup-screen').classList.add('open');
+  setTimeout(() => document.getElementById('setup-name').focus(), 0);
+}
+function closeSetup() { document.getElementById('setup-screen').classList.remove('open'); }
+
+function defaultLevelsFor(track) {
+  return track === 'Manager' ? { currentLevel: 'M3', targetLevel: 'M4' } : { currentLevel: 'IC4', targetLevel: 'IC5' };
+}
+function setExploreTarget(level) {
+  const p = state.profile; const levels = p.track === 'IC' ? IC_LEVELS : MGR_LEVELS;
+  const i = levels.indexOf(level); if (i < 0) return;
+  p.targetLevel = level;
+  if (levels.indexOf(p.currentLevel) >= i) p.currentLevel = levels[Math.max(0, i - 1)];
+  saveState(); refreshProfileChrome(); renderExplore();
+}
+function setExploreTrack(track) {
+  const p = state.profile; if (p.track === track) return;
+  p.track = track; Object.assign(p, defaultLevelsFor(track)); currentTrack = track;
+  saveState(); initLogForm(); initFilters(); refreshProfileChrome(); renderExplore();
+}
+function refreshProfileChrome() {
+  const p = state.profile;
+  document.getElementById('sidebar-level').textContent = `${p.currentLevel} → ${p.targetLevel}`;
+  document.getElementById('menu-level').textContent = `${p.currentLevel} → ${p.targetLevel} · ${p.track} track`;
+  document.getElementById('banner-levels').textContent = `${p.track} track, ${p.currentLevel} → ${p.targetLevel}`;
+}
+function renderExploreControls() {
+  const p = state.profile; const levels = p.track === 'IC' ? IC_LEVELS : MGR_LEVELS; const names = p.track === 'IC' ? IC_LEVEL_NAMES : MGR_LEVEL_NAMES;
+  const sel = document.getElementById('explore-target');
+  sel.innerHTML = levels.slice(1).map(l => `<option value="${l}" ${l === p.targetLevel ? 'selected' : ''}>${l} · ${names[l] || ''}</option>`).join('');
+  document.getElementById('explore-track').value = p.track;
+}
+
+function resetApp() {
+  if (!confirm('Reset everything and start over? Your accomplishments, reflections, and direction will be deleted from this browser.')) return;
+  localStorage.removeItem('engtracker');
+  localStorage.removeItem('yengtracker');
+  location.reload();
+}
+
+// ─────────────────────────────────────────────
+// NAVIGATION
+// ─────────────────────────────────────────────
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.querySelector(`[data-page="${id}"]`).classList.add('active');
+
+  const banner = document.getElementById('profile-banner');
+  if (banner) banner.classList.toggle('show', !!(state.profile && state.profile.provisional) && id !== 'explore');
+  if (id === 'dashboard') renderDashboard();
+  if (id === 'timeline') renderTimeline();
+  if (id === 'export') renderExport();
+  if (id === 'explore') renderExplore();
+  if (id === 'log' && !editingId) {
+    resetLogForm();
+    document.getElementById('log-page-title').textContent = 'Log Accomplishment';
+    document.getElementById('save-log-btn').textContent = 'Save Accomplishment';
+  }
+}
+
+// ─────────────────────────────────────────────
+// LOG FORM
+// ─────────────────────────────────────────────
+function initLogForm() {
+  const p = state.profile;
+  const comps = p.track === 'IC' ? IC_COMPETENCIES : MGR_COMPETENCIES;
+  const levels = p.track === 'IC' ? IC_LEVELS : MGR_LEVELS;
+
+  // Competency chips
+  const cc = document.getElementById('comp-chips');
+  cc.innerHTML = comps.map(c =>
+    `<div class="multi-chip" data-val="${c}" onclick="toggleChip(this,'comp')">${c}</div>`
+  ).join('');
+
+  // Stakeholder chips
+  renderStakeholderChips();
+
+  // Level select — from current to target+1
+  const ll = document.getElementById('log-level');
+  const idx = levels.indexOf(p.currentLevel);
+  const showLevels = levels.slice(Math.max(0, idx - 1));
+  ll.innerHTML = showLevels.map(l => `<option value="${l}">${l}</option>`).join('');
+  // Default to target
+  ll.value = p.targetLevel;
+
+  // Date default
+  document.getElementById('log-date').value = todayStr();
+}
+
+function toggleChip(el, group) {
+  el.classList.toggle('selected');
+  if (group === 'comp') {
+    selectedCompetencies = [...document.querySelectorAll('#comp-chips .multi-chip.selected')].map(c => c.dataset.val);
+  } else {
+    selectedStakeholders = [...document.querySelectorAll('#stakeholder-chips .multi-chip.selected')].map(c => c.dataset.val);
+  }
+}
+
+function renderStakeholderChips(preSelected) {
+  const all = [...STAKEHOLDERS, ...state.customStakeholders];
+  const active = preSelected || selectedStakeholders;
+  const sc = document.getElementById('stakeholder-chips');
+  sc.innerHTML = all.map(s => {
+    const sel = active.includes(s) ? ' selected' : '';
+    return `<div class="multi-chip${sel}" data-val="${s}" onclick="toggleChip(this,'stakeholder')">${s}</div>`;
+  }).join('');
+  // sync selectedStakeholders to whatever is actually rendered as selected
+  selectedStakeholders = [...document.querySelectorAll('#stakeholder-chips .multi-chip.selected')].map(c => c.dataset.val);
+}
+
+function addCustomStakeholder() {
+  const input = document.getElementById('stakeholder-input');
+  const val = input.value.trim();
+  if (!val) return;
+  if (!STAKEHOLDERS.includes(val) && !state.customStakeholders.includes(val)) {
+    state.customStakeholders.push(val);
+    saveState();
+  }
+  if (!selectedStakeholders.includes(val)) selectedStakeholders.push(val);
+  input.value = '';
+  renderStakeholderChips();
+}
+
+// ─────────────────────────────────────────────
+// PROFILE IMPORT / EXPORT
+// ─────────────────────────────────────────────
+function exportProfile() {
+  const p = state.profile;
+  const filename = `careerpillar-${(p ? p.name.replace(/\s+/g,'-').toLowerCase() : 'profile')}-${todayStr()}.json`;
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importProfile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const imported = JSON.parse(e.target.result);
+      if (!imported.profile || !imported.accomplishments) {
+        alert('Invalid profile file — make sure you are importing a careerpillar export.');
+        return;
+      }
+      state = normalizeState(imported);
+      saveState();
+      initApp();
+    } catch(err) {
+      alert('Could not read the file. Make sure it is a valid JSON export.');
+    }
+    // Reset file input so same file can be re-imported if needed
+    event.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+function resetLogForm() {
+  editingId = null;
+  selectedCompetencies = [];
+  selectedStakeholders = [];
+  document.getElementById('log-date').value = todayStr();
+  document.getElementById('log-title').value = '';
+  document.getElementById('log-action').value = '';
+  document.getElementById('log-impact').value = '';
+  document.getElementById('log-link').value = '';
+  document.getElementById('log-tags').value = '';
+  document.getElementById('log-level').value = state.profile.targetLevel;
+  document.querySelectorAll('#comp-chips .multi-chip').forEach(c => c.classList.remove('selected'));
+  document.getElementById('stakeholder-input').value = '';
+  renderStakeholderChips();
+}
+
+function cancelEdit() {
+  editingId = null;
+  resetLogForm();
+  showPage('timeline');
+}
+
+function saveAccomplishment() {
+  const title = document.getElementById('log-title').value.trim();
+  const action = document.getElementById('log-action').value.trim();
+  const impact = document.getElementById('log-impact').value.trim();
+  if (!title) { alert('Title is required.'); return; }
+  if (!action) { alert('What you did is required.'); return; }
+  if (selectedCompetencies.length === 0) { alert('Select at least one competency category.'); return; }
+
+  const acc = {
+    id: editingId || uid(),
+    date: document.getElementById('log-date').value || todayStr(),
+    title,
+    action,
+    impact,
+    competencies: [...selectedCompetencies],
+    level: document.getElementById('log-level').value,
+    stakeholders: [...selectedStakeholders],
+    link: parseLinks(document.getElementById('log-link').value)[0]?.url || "",
+    links: parseLinks(document.getElementById('log-link').value),
+    tags: document.getElementById('log-tags').value.split(',').map(t => t.trim()).filter(Boolean),
+    createdAt: editingId ? undefined : Date.now()
+  };
+
+  if (editingId) {
+    const idx = state.accomplishments.findIndex(a => a.id === editingId);
+    if (idx >= 0) state.accomplishments[idx] = { ...state.accomplishments[idx], ...acc };
+  } else {
+    acc.createdAt = Date.now();
+    acc.loggedAt = todayStr();
+    state.accomplishments.unshift(acc);
+  }
+
+  saveState();
+  resetLogForm();
+  showToast(editingId ? 'Updated.' : 'Accomplishment saved.');
+  editingId = null;
+  showPage('timeline');
+}
+
+// ─────────────────────────────────────────────
+// DASHBOARD
+// ─────────────────────────────────────────────
+function renderDashboard() {
+  const p = state.profile;
+  const accs = state.accomplishments;
+  const comps = p.track === 'IC' ? IC_COMPETENCIES : MGR_COMPETENCIES;
+
+  document.getElementById('dash-subtitle').textContent = `${p.name ? p.name + ' · ' : ''}${p.currentLevel} → ${p.targetLevel}`;
+
+  // Stat cards
+  const total = accs.length;
+  const covered = comps.filter(c => accs.some(a => a.competencies.includes(c))).length;
+  const pct = comps.length ? Math.round((covered / comps.length) * 100) : 0;
+  const lastDate = accs.length ? Math.max(...accs.map(a => new Date(a.date).getTime())) : null;
+  const daysSince = lastDate ? Math.floor((Date.now() - lastDate) / 86400000) : '—';
+  const targetCount = accs.filter(a => a.level === p.targetLevel).length;
+
+  document.getElementById('stat-cards').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-label">Total Accomplishments</div>
+      <div class="stat-value">${total}</div>
+      <div class="stat-sub">All time</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Competency Coverage</div>
+      <div class="stat-value" style="color:${pct>=80?'var(--green)':pct>=40?'var(--yellow)':'var(--red)'}">${pct}%</div>
+      <div class="stat-sub">${covered} of ${comps.length} areas</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Days Since Last Log</div>
+      <div class="stat-value" style="color:${daysSince==='—'?'var(--text-muted)':daysSince>14?'var(--yellow)':'var(--cyan)'}">${daysSince}</div>
+      <div class="stat-sub">${lastDate ? fmtDate(new Date(lastDate)) : 'No entries yet'}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Target Level Evidence</div>
+      <div class="stat-value" style="color:var(--cyan)">${targetCount}</div>
+      <div class="stat-sub">Mapped to ${p.targetLevel}</div>
+    </div>
+  `;
+
+  // Competency bars
+  const bars = comps.map(c => {
+    const count = accs.filter(a => a.competencies.includes(c)).length;
+    const max = 5;
+    const pctFill = Math.min(100, (count / max) * 100);
+    const cls = count >= 3 ? 'bar-green' : count >= 1 ? 'bar-yellow' : 'bar-red';
+    return `
+      <div class="comp-bar-row">
+        <div class="comp-bar-label">${c}</div>
+        <div class="comp-bar-track">
+          <div class="comp-bar-fill ${cls}" style="width:${count===0?'4px':pctFill+'%'}"></div>
+        </div>
+        <div class="comp-bar-count">${count}</div>
+      </div>
+    `;
+  }).join('');
+  document.getElementById('comp-bars').innerHTML = bars;
+
+  // Gap analysis
+  const tgt = p.targetLevel;
+  document.getElementById('gap-target-label').textContent = tgt;
+  const matrix = MATRIX[p.track];
+  const gaps = comps.map(c => {
+    const desc = matrix[c] && matrix[c][tgt] ? matrix[c][tgt] : null;
+    const count = accs.filter(a => a.competencies.includes(c) && a.level === tgt).length;
+    const totalC = accs.filter(a => a.competencies.includes(c)).length;
+    const cls = count >= 2 ? 'gap-good' : count === 1 ? 'gap-warn' : 'gap-bad';
+    const badge = count >= 2 ? `<span class="badge badge-green">Strong (${count})</span>` :
+                  count === 1 ? `<span class="badge badge-yellow">Thin (${count})</span>` :
+                  `<span class="badge badge-red">Gap (0)</span>`;
+    return `
+      <div class="gap-item ${cls}">
+        <div class="gap-category">${c}</div>
+        ${desc ? `<div class="gap-descriptor">${desc}</div>` : ''}
+        <div class="gap-evidence">${badge} ${totalC > count ? `· ${totalC - count} at other levels` : ''} ${count === 0 ? '— No evidence at target level yet.' : `— ${count} accomplishment${count>1?'s':''} mapped here.`}</div>
+      </div>
+    `;
+  }).join('');
+  document.getElementById('gap-analysis').innerHTML = gaps;
+  renderDirectionCard();
+}
+
+// ─────────────────────────────────────────────
+// TIMELINE
+// ─────────────────────────────────────────────
+function initFilters() {
+  const p = state.profile;
+  const comps = p.track === 'IC' ? IC_COMPETENCIES : MGR_COMPETENCIES;
+  const levels = p.track === 'IC' ? IC_LEVELS : MGR_LEVELS;
+
+  const fc = document.getElementById('filter-comp');
+  fc.innerHTML = `<option value="">All Competencies</option>` +
+    comps.map(c => `<option value="${c}">${c}</option>`).join('');
+
+  const fs = document.getElementById('filter-stakeholder');
+  const allStakeholders = [...STAKEHOLDERS, ...state.customStakeholders];
+  fs.innerHTML = `<option value="">All Stakeholders</option>` +
+    allStakeholders.map(s => `<option value="${s}">${s}</option>`).join('');
+
+  const fl = document.getElementById('filter-level');
+  fl.innerHTML = `<option value="">All Levels</option>` +
+    levels.map(l => `<option value="${l}">${l}</option>`).join('');
+}
+
+function clearFilters() {
+  document.getElementById('filter-comp').value = '';
+  document.getElementById('filter-stakeholder').value = '';
+  document.getElementById('filter-level').value = '';
+  document.getElementById('filter-from').value = '';
+  document.getElementById('filter-to').value = '';
+  renderTimeline();
+}
+
+function renderTimeline() {
+  const fc = document.getElementById('filter-comp').value;
+  const fs = document.getElementById('filter-stakeholder').value;
+  const fl = document.getElementById('filter-level').value;
+  const ff = document.getElementById('filter-from').value;
+  const ft = document.getElementById('filter-to').value;
+
+  let accs = [...state.accomplishments].sort((a,b) => b.date.localeCompare(a.date));
+  if (fc) accs = accs.filter(a => a.competencies.includes(fc));
+  if (fs) accs = accs.filter(a => a.stakeholders.includes(fs));
+  if (fl) accs = accs.filter(a => a.level === fl);
+  if (ff) accs = accs.filter(a => a.date >= ff);
+  if (ft) accs = accs.filter(a => a.date <= ft);
+
+  document.getElementById('timeline-subtitle').textContent =
+    `${accs.length} accomplishment${accs.length!==1?'s':''} ${accs.length !== state.accomplishments.length ? '(filtered)' : ''}`;
+
+  if (accs.length === 0) {
+    document.getElementById('timeline-list').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">◈</div>
+        <h3>${state.accomplishments.length === 0 ? 'Nothing logged yet' : 'No matches'}</h3>
+        <p>${state.accomplishments.length === 0 ? 'Log your first accomplishment to get started.' : 'Try clearing the filters.'}</p>
+      </div>`;
+    return;
+  }
+
+  document.getElementById('timeline-list').innerHTML = accs.map(a => accCard(a)).join('');
+}
+
+function accCard(a) {
+  const names = state.profile.track === 'IC' ? IC_LEVEL_NAMES : MGR_LEVEL_NAMES;
+  return `
+    <div class="acc-item" id="acc-${a.id}">
+      <div class="acc-item-header">
+        <div class="acc-item-title">${escHtml(a.title)}</div>
+        <div class="acc-item-date">${fmtDate(new Date(a.date))}</div>
+      </div>
+      <div class="acc-item-action">${escHtml(a.action)}</div>
+      ${a.impact ? `<div class="acc-item-impact">${escHtml(a.impact)}</div>` : ''}
+      <div class="acc-item-meta">
+        <span class="level-chip">${a.level}</span>
+        ${a.competencies.map(c => `<span class="badge badge-cyan">${c}</span>`).join('')}
+        ${a.stakeholders.map(s => `<span class="badge badge-dim">${s}</span>`).join('')}
+        ${a.tags.map(t => `<span class="badge" style="background:var(--surface2);color:var(--text-muted)">#${escHtml(t)}</span>`).join('')}
+        ${a.link ? `<a href="${escHtml(a.link)}" target="_blank" class="acc-link">↗ Ref${(a.links && a.links.length > 1) ? ' +' + (a.links.length - 1) : ''}</a>` : ''}
+      </div>
+      <div class="acc-item-actions">
+        <button class="btn btn-ghost" style="font-size:12px;padding:6px 12px;" onclick="editAcc('${a.id}')">Edit</button>
+        <button class="btn btn-danger" onclick="promptDelete('${a.id}')">Delete</button>
+      </div>
+    </div>
+  `;
+}
+
+function editAcc(id) {
+  const a = state.accomplishments.find(x => x.id === id);
+  if (!a) return;
+  editingId = id;
+
+  // Populate form
+  document.getElementById('log-date').value = a.date;
+  document.getElementById('log-title').value = a.title;
+  document.getElementById('log-action').value = a.action;
+  document.getElementById('log-impact').value = a.impact || '';
+  document.getElementById('log-link').value = (a.links && a.links.length) ? a.links.map(l => l.url).join(' ') : (a.link || '');
+  document.getElementById('log-tags').value = (a.tags || []).join(', ');
+  document.getElementById('log-level').value = a.level;
+
+  selectedCompetencies = [...a.competencies];
+  selectedStakeholders = [...a.stakeholders];
+
+  document.querySelectorAll('#comp-chips .multi-chip').forEach(c => {
+    c.classList.toggle('selected', a.competencies.includes(c.dataset.val));
+  });
+
+  // Ensure any custom stakeholders from this entry are in state
+  a.stakeholders.forEach(s => {
+    if (!STAKEHOLDERS.includes(s) && !state.customStakeholders.includes(s)) {
+      state.customStakeholders.push(s);
+    }
+  });
+  document.getElementById('stakeholder-input').value = '';
+  renderStakeholderChips(a.stakeholders);
+
+  document.getElementById('log-page-title').textContent = 'Edit Accomplishment';
+  document.getElementById('save-log-btn').textContent = 'Save Changes';
+  showPage('log');
+}
+
+function promptDelete(id) {
+  deleteTargetId = id;
+  document.getElementById('confirm-dialog').classList.add('open');
+}
+
+function confirmDelete() {
+  state.accomplishments = state.accomplishments.filter(a => a.id !== deleteTargetId);
+  saveState();
+  deleteTargetId = null;
+  closeConfirm();
+  renderTimeline();
+  showToast('Deleted.');
+}
+
+function closeConfirm() {
+  document.getElementById('confirm-dialog').classList.remove('open');
+}
+
+function closeModal() {
+  document.getElementById('edit-modal').classList.remove('open');
+}
+
+// ─────────────────────────────────────────────
+// EXPORT
+// ─────────────────────────────────────────────
+function renderExport() {
+  const p = state.profile;
+  const fmt = document.getElementById('export-format').value;
+  const from = document.getElementById('export-from').value;
+  const to = document.getElementById('export-to').value;
+  const names = p.track === 'IC' ? IC_LEVEL_NAMES : MGR_LEVEL_NAMES;
+  const comps = p.track === 'IC' ? IC_COMPETENCIES : MGR_COMPETENCIES;
+
+  let accs = [...state.accomplishments].sort((a,b) => a.date.localeCompare(b.date));
+  if (from) accs = accs.filter(a => a.date >= from);
+  if (to) accs = accs.filter(a => a.date <= to);
+
+  const dateRange = from || to ? `${from || 'All'} → ${to || 'Present'}` : 'All time';
+  const matrix = MATRIX[p.track];
+
+  let out = '';
+
+  if (fmt === 'promo') {
+    out += `PROMOTION CASE\n`;
+    out += `${'═'.repeat(60)}\n`;
+    out += `Candidate:      ${p.name}\n`;
+    out += `Current Level:  ${p.currentLevel} — ${names[p.currentLevel] || ''}\n`;
+    out += `Target Level:   ${p.targetLevel} — ${names[p.targetLevel] || ''}\n`;
+    out += `Period:         ${dateRange}\n`;
+    out += `Track:          ${p.track}\n`;
+    out += `Generated:      ${new Date().toLocaleDateString()}\n`;
+    out += `${'═'.repeat(60)}\n\n`;
+
+    out += `BUSINESS JUSTIFICATION\n`;
+    out += `${'─'.repeat(40)}\n`;
+    out += `[Add: why this role/level is needed now; connect to org strategy, roadmap, OKRs]\n\n`;
+
+    out += `EMPLOYEE READINESS — EVIDENCE BY COMPETENCY\n`;
+    out += `${'─'.repeat(40)}\n\n`;
+
+    comps.forEach(cat => {
+      const catAccs = accs.filter(a => a.competencies.includes(cat));
+      const tgtDesc = matrix[cat] && matrix[cat][p.targetLevel] ? matrix[cat][p.targetLevel] : '';
+      out += `${cat.toUpperCase()}\n`;
+      if (tgtDesc) out += `Target (${p.targetLevel}): ${tgtDesc}\n`;
+      out += `Evidence (${catAccs.length} item${catAccs.length!==1?'s':''}):\n`;
+      if (catAccs.length === 0) {
+        out += `  [GAP — No evidence logged for this competency]\n`;
+      } else {
+        catAccs.forEach(a => {
+          out += `  • [${a.date}] ${a.title}\n`;
+          out += `    Action: ${a.action}\n`;
+          if (a.impact) out += `    Impact: ${a.impact}\n`;
+          if (a.stakeholders.length) out += `    Stakeholders: ${a.stakeholders.join(', ')}\n`;
+          (a.links || []).forEach(l => { out += `    Ref: ${l.label ? l.label + ' ' : ''}${l.url}\n`; });
+        });
+      }
+      out += `\n`;
+    });
+
+    out += `GAP ANALYSIS\n`;
+    out += `${'─'.repeat(40)}\n`;
+    comps.forEach(cat => {
+      const count = accs.filter(a => a.competencies.includes(cat) && a.level === p.targetLevel).length;
+      const status = count >= 2 ? '✓ Strong' : count === 1 ? '~ Thin' : '✗ Gap';
+      out += `  ${status.padEnd(12)} ${cat}\n`;
+    });
+    out += `\n`;
+
+    out += `AREAS FOR GROWTH\n`;
+    out += `${'─'.repeat(40)}\n`;
+    out += `[Add honest growth areas — a promo case without this lacks credibility]\n\n`;
+
+    out += `PEER FEEDBACK\n`;
+    out += `${'─'.repeat(40)}\n`;
+    out += `[Minimum 3 voices, at least one cross-functional — required]\n\n`;
+
+  } else {
+    // Performance Review
+    out += `PERFORMANCE REVIEW\n`;
+    out += `${'═'.repeat(60)}\n`;
+    out += `Name:    ${p.name}\n`;
+    out += `Level:   ${p.currentLevel} — ${names[p.currentLevel] || ''}\n`;
+    out += `Period:  ${dateRange}\n`;
+    out += `Generated: ${new Date().toLocaleDateString()}\n`;
+    out += `${'═'.repeat(60)}\n\n`;
+
+    out += `PERFORMANCE ASSESSMENT\n`;
+    out += `${'─'.repeat(40)}\n`;
+    out += `[Open with a narrative paragraph — what they worked on, why it mattered, how they showed up]\n\n`;
+
+    comps.forEach(cat => {
+      const catAccs = accs.filter(a => a.competencies.includes(cat));
+      out += `${cat.toUpperCase()} (${catAccs.length} accomplishment${catAccs.length!==1?'s':''})\n`;
+      if (catAccs.length === 0) {
+        out += `  No entries logged for this area.\n`;
+      } else {
+        catAccs.forEach(a => {
+          const impact = a.impact ? ` ${a.impact}` : '';
+          const stk = a.stakeholders.length ? ` Stakeholders: ${a.stakeholders.join(', ')}.` : '';
+          out += `  • ${a.action}${impact ? ' —' + impact : ''}.${stk}\n`;
+          (a.links || []).forEach(l => { out += `    [${l.label ? l.label + ': ' : ''}${l.url}]\n`; });
+        });
+      }
+      out += `\n`;
+    });
+
+    out += `GROWTH OPPORTUNITIES\n`;
+    out += `${'─'.repeat(40)}\n`;
+    const gaps = comps.filter(cat => accs.filter(a => a.competencies.includes(cat)).length === 0);
+    if (gaps.length) {
+      out += `Areas with no logged evidence:\n`;
+      gaps.forEach(g => out += `  • ${g}\n`);
+    } else {
+      out += `[All competency areas have at least one entry. Identify depth vs breadth gaps.]\n`;
+    }
+    out += `\n`;
+
+    out += `WORK EXPECTATIONS (UPCOMING)\n`;
+    out += `${'─'.repeat(40)}\n`;
+    out += `[Add upcoming projects and responsibilities; embed growth opportunities from section above]\n`;
+  }
+
+  document.getElementById('export-preview').textContent = out;
+}
+
+function copyExport() {
+  const text = document.getElementById('export-preview').textContent;
+  navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard.'));
+}
+
+function downloadExport() {
+  const text = document.getElementById('export-preview').textContent;
+  const p = state.profile;
+  const blob = new Blob([text], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${p.name.replace(/\s+/g,'-')}-${p.currentLevel}-to-${p.targetLevel}-${todayStr()}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Downloaded.');
+}
+
+// ─────────────────────────────────────────────
+// UTILITIES
+// ─────────────────────────────────────────────
+function uid() {
+  return Math.random().toString(36).slice(2) + Date.now().toString(36);
+}
+
+function todayStr() {
+  return new Date().toISOString().split('T')[0];
+}
+
+function fmtDate(d) {
+  return d.toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' });
+}
+
+function escHtml(str) {
+  return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ─────────────────────────────────────────────
+// BOOT
+// ─────────────────────────────────────────────
+loadState();
+if (!state.profile) {
+  state.profile = { name: '', track: 'IC', ...defaultLevelsFor('IC'), provisional: true };
+}
+currentTrack = state.profile.track || 'IC';
+populateLevelSelects();
+initApp();
+
+// ─────────────────────────────────────────────
+// EXPLORE — career shapes, evidence read, reflection, direction
+// ─────────────────────────────────────────────
+var openShapeId = null;
+
+function stakeholderClass(s) {
+  const t = String(s || '').toLowerCase();
+  if (!t) return 'unknown';
+  if (/exec|vp|svp|cto|ceo|director|chief|leadership|head of/.test(t)) return 'exec';
+  if (/product|pm\b|design|ux|editorial|marketing|legal|data|analytics|customer/.test(t)) return 'product';
+  if (/cross|other team|partner|external|platform|infra|sdk|vendor|\(.*team\)/.test(t)) return 'crossTeam';
+  if (/self|solo/.test(t)) return 'solo';
+  return 'team';
+}
+
+function accText(a) {
+  return [a.title, a.action, a.impact, (a.tags || []).join(' ')].join(' ').toLowerCase();
+}
+
+function scoreShapes() {
+  const accs = state.accomplishments;
+  const scores = {}; const top = {};
+  PATHS.forEach(s => { scores[s.id] = 0; top[s.id] = []; });
+  accs.forEach(a => {
+    const text = accText(a);
+    const classes = (a.stakeholders || []).map(stakeholderClass);
+    PATHS.forEach(s => {
+      let v = 0;
+      s.keywords.forEach(k => { if (text.includes(k)) v += 1; });
+      (a.competencies || []).forEach(c => { v += s.competencies[c] || 0; });
+      classes.forEach(c => { v += s.stakeholders[c] || 0; });
+      if (v > 0) { scores[s.id] += v; top[s.id].push({ v, a }); }
+    });
+  });
+  // Breadth-builder gets a bonus for distinct systems (tags) across the whole history
+  const distinctTags = new Set(accs.flatMap(a => (a.tags || []).map(t => t.toLowerCase()))).size;
+  if (accs.length) scores['breadth'] += Math.min(distinctTags, 12) * 0.5;
+  Object.keys(top).forEach(id => top[id].sort((x, y) => y.v - x.v));
+  const total = Object.values(scores).reduce((x, y) => x + y, 0) || 1;
+  return { scores, top, total, distinctTags };
+}
+
+function evidenceFacts() {
+  const accs = state.accomplishments;
+  const n = accs.length;
+  let crossOrExec = 0, teamOnly = 0, unknown = 0, exec = 0;
+  accs.forEach(a => {
+    const cls = (a.stakeholders || []).map(stakeholderClass);
+    if (!cls.length) { unknown++; return; }
+    if (cls.includes('exec')) exec++;
+    if (cls.includes('exec') || cls.includes('crossTeam') || cls.includes('product')) crossOrExec++;
+    else teamOnly++;
+  });
+  const longHorizon = accs.filter(a => /year|multi-year|long-term|long term|foundation|platform/.test(accText(a))).length;
+  const initiated = accs.filter(a => /proposed|identified|initiated|noticed|spotted|took over|volunteer|advocat|pushed for|on my own/.test(accText(a))).length;
+  const mentoring = accs.filter(a => /mentor|interview|onboard|unblock|coach|bootcamp/.test(accText(a))).length;
+  const dates = accs.map(a => a.date).filter(Boolean);
+  const dateCounts = {}; dates.forEach(d => { dateCounts[d] = (dateCounts[d] || 0) + 1; });
+  const maxSameDate = Math.max(0, ...Object.values(dateCounts));
+  const sixMonthsAgo = Date.now() - 183 * 86400000;
+  const recent = accs.filter(a => new Date(a.date).getTime() > sixMonthsAgo).length;
+  return { n, crossOrExec, teamOnly, unknown, exec, longHorizon, initiated, mentoring, maxSameDate, recent };
+}
+
+function renderExplore() {
+  const p = state.profile;
+  renderExploreControls();
+  document.getElementById('dir-level-label').textContent = p.targetLevel;
+  document.getElementById('dir-hypothesis').placeholder = `I want to become the ___ kind of ${p.targetLevel}: owning ___, influencing ___.`;
+  const { scores, top, total, distinctTags } = scoreShapes();
+  const f = evidenceFacts();
+  const dir = state.careerDirection || {};
+
+  // Stats
+  const reachPct = f.n ? Math.round((f.crossOrExec / f.n) * 100) : 0;
+  document.getElementById('explore-stats').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-label">Reach beyond your team</div>
+      <div class="stat-value" style="color:${reachPct >= 50 ? 'var(--green)' : reachPct >= 25 ? 'var(--yellow)' : 'var(--text-dim)'}">${f.n ? reachPct + '%' : '—'}</div>
+      <div class="stat-sub">${f.crossOrExec} of ${f.n} entries name cross-team, partner, or executive stakeholders${f.unknown ? ` · ${f.unknown} have none listed` : ''}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Breadth</div>
+      <div class="stat-value" style="color:var(--cyan)">${distinctTags}</div>
+      <div class="stat-sub">distinct systems or tags across your history</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">You decided, not assigned</div>
+      <div class="stat-value" style="color:var(--cyan)">${f.initiated}</div>
+      <div class="stat-sub">entries where you proposed, spotted, or took over the work</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Direction</div>
+      <div class="stat-value" style="font-size:18px;color:${dir.archetype ? 'var(--green)' : 'var(--text-muted)'}">${dir.archetype ? escHtml(dir.archetype) : 'Not set'}</div>
+      <div class="stat-sub">${dir.updatedAt ? 'saved ' + dir.updatedAt : 'pick a shape below'}</div>
+    </div>`;
+
+  // Bars (archetypes + breadth; stay-senior and manager are choices, not evidence reads)
+  const scored = PATHS.filter(s => s.id !== 'stay-senior');
+  const maxScore = Math.max(1, ...scored.map(s => scores[s.id]));
+  document.getElementById('explore-bars').innerHTML = f.n ? scored.map(s => {
+    const pct = Math.round((scores[s.id] / maxScore) * 100);
+    const share = Math.round((scores[s.id] / total) * 100);
+    const cls = pct >= 70 ? 'bar-green' : pct >= 35 ? 'bar-yellow' : 'bar-red';
+    const ex = top[s.id].slice(0, 2).map(t => escHtml(t.a.title)).join(' · ');
+    return `
+      <div class="comp-bar-row" title="${ex}">
+        <div class="comp-bar-label">${s.name}</div>
+        <div class="comp-bar-track"><div class="comp-bar-fill ${cls}" style="width:${pct === 0 ? '4px' : pct + '%'}"></div></div>
+        <div class="comp-bar-count">${share}%</div>
+      </div>`;
+  }).join('') + `<div class="hint-text" style="margin-top:6px;">Hover a bar to see the two entries that pull it most. Share of total signal across shapes.</div>`
+  : `<div class="hint-text">No accomplishments yet. Log a few, or run <code>/careerpillar:backfill</code>, and this fills in.</div>`;
+
+  // Flags
+  const flags = [];
+  if (f.n >= 5 && f.maxSameDate / f.n >= 0.5) flags.push(['info', `${f.maxSameDate} of ${f.n} entries share one date. The data looks back-filled, so recency reads are unreliable here. <code>/careerpillar:backfill</code> can repair dates from PR history.`]);
+  if (f.n >= 5 && f.unknown / f.n >= 0.5) flags.push(['warn', `${f.unknown} entries list no stakeholders. Reach beyond your team is the question committees ask about staff-level work; fill this field before trusting the read above.`]);
+  if (f.n >= 8 && distinctTags <= 2) flags.push(['warn', `Your history shows one or two systems. Deep familiarity with one system feels like seniority from the inside; it is not the same thing. Consider whether breadth is the next move.`]);
+  if (f.n >= 6 && f.mentoring / f.n >= 0.4 && f.recent / f.n < 0.3) flags.push(['warn', `Mentoring, interviewing, and unblocking dominate, and little has shipped recently. That is the premature-senior pattern: the calendar fills, the hands-on work disappears, and others’ growth routes through you.`]);
+  if (f.n >= 5 && f.crossOrExec === 0 && f.unknown < f.n) flags.push(['warn', `No entry names a cross-team, partner, or executive stakeholder. Every staff shape requires influence beyond one team; senior does not. Decide which you want before optimizing.`]);
+  if (f.n >= 5 && f.exec > 0) flags.push(['good', `${f.exec} entr${f.exec > 1 ? 'ies' : 'y'} involve${f.exec > 1 ? '' : 's'} executive stakeholders. Rare at this level and worth naming explicitly in any packet.`]);
+  if (f.n >= 5 && f.initiated / f.n >= 0.3) flags.push(['good', `${f.initiated} entries describe work you proposed or took over. Deciding what needs doing is the senior-judgment signal every source names.`]);
+  document.getElementById('explore-flags').innerHTML = flags.map(([k, t]) => `<div class="flag-item flag-${k}"><div class="flag-dot"></div><div>${t}</div></div>`).join('');
+
+  // Shape cards
+  const matrix = MATRIX[p.track] || {};
+  const levels = p.track === 'IC' ? IC_LEVELS : MGR_LEVELS;
+  const tgtIdx = levels.indexOf(p.targetLevel);
+  const nextLevel = tgtIdx >= 0 && tgtIdx + 1 < levels.length ? levels[tgtIdx + 1] : null;
+  const selected = dir.archetype;
+  document.getElementById('shape-grid').innerHTML = PATHS.map(s => {
+    const share = Math.round((scores[s.id] / total) * 100);
+    const isOpen = openShapeId === s.id;
+    const isSel = selected === s.name;
+    const comp = matrix[s.primaryCompetency] ? s.primaryCompetency : Object.keys(matrix)[0];
+    const atTarget = matrix[comp] && matrix[comp][p.targetLevel];
+    const atNext = nextLevel && matrix[comp] && matrix[comp][nextLevel];
+    const ex = top[s.id].slice(0, 3);
+    const detail = !isOpen ? '' : `
+      <div class="shape-detail">
+        <div><h4>The week</h4><p>${s.week}</p></div>
+        <div><h4>Where it exists</h4><p>${s.where}</p></div>
+        <div><h4>At ${p.targetLevel}, here</h4><p>${s.seniorVersion}</p>${atTarget ? `<div class="matrix-quote">${comp} at ${p.targetLevel}: ${escHtml(atTarget)}</div>` : ''}</div>
+        <div><h4>${nextLevel ? 'And at ' + nextLevel : 'Beyond'}</h4>${atNext ? `<div class="matrix-quote">${comp} at ${nextLevel}: ${escHtml(atNext)}</div>` : '<p class="hint-text">Top of the ladder in this matrix.</p>'}</div>
+        <div><h4>What it does not mean</h4><ul>${s.notMeans.map(n => `<li>${n}</li>`).join('')}</ul></div>
+        <div><h4>Your evidence (${top[s.id].length} entr${top[s.id].length === 1 ? 'y' : 'ies'})</h4>${ex.length ? `<ul class="evidence-list">${ex.map(t => `<li>${escHtml(t.a.title)} <span class="hint-text">(${t.a.date})</span></li>`).join('')}</ul>` : '<p class="hint-text">Nothing in your log reads as this shape yet.</p>'}</div>
+      </div>
+      <div class="shape-actions">
+        <button class="btn btn-primary" style="font-size:12px;" onclick="event.stopPropagation(); chooseShape('${s.id}')">${isSel ? 'Chosen ✓' : 'Choose this direction'}</button>
+        <button class="btn btn-ghost" style="font-size:12px;" onclick="event.stopPropagation(); openShapeId=null; renderExplore();">Close</button>
+      </div>`;
+    return `
+      <div class="shape-card ${isOpen ? 'open' : ''} ${isSel ? 'selected' : ''}" onclick="if (openShapeId !== '${s.id}') { openShapeId = '${s.id}'; renderExplore(); }">
+        <div class="shape-head"><div class="shape-name">${s.name}${isSel ? ' <span style="color:var(--cyan)">✓</span>' : ''}</div><div class="shape-kind">${s.kind === 'archetype' ? 'staff archetype' : 'path'}</div></div>
+        <div class="shape-oneline">${s.oneLine}</div>
+        <div class="shape-lean">${s.id === 'stay-senior' ? 'always available' : `your log: <b>${f.n ? share + '%' : '—'}</b> of signal`}</div>
+        ${detail}
+      </div>`;
+  }).join('');
+
+  // Reflection questions
+  const refl = dir.reflections || {};
+  document.getElementById('explore-questions').innerHTML = EXPLORE_QUESTIONS.map(q => `
+    <div class="reflect-q">
+      <label>${q.label}</label>
+      <div class="q-text">${q.q}</div>
+      <textarea data-qid="${q.id}" onblur="saveReflection(this)" placeholder="In your own words…">${escHtml(refl[q.id] || '')}</textarea>
+    </div>`).join('');
+
+  // Direction form
+  document.getElementById('dir-hypothesis').value = dir.hypothesis || '';
+  document.getElementById('dir-meaning').value = dir.meaning || '';
+  renderExperimentRows(dir.experiments || []);
+  document.getElementById('dir-saved-note').textContent = dir.updatedAt ? `Saved ${dir.updatedAt}. Skills and exports read this.` : '';
+
+  // Mismatch note: what you chose vs what the log says
+  const lean = scored.slice().sort((a, b) => scores[b.id] - scores[a.id])[0];
+  const mm = document.getElementById('direction-mismatch');
+  if (selected && lean && f.n >= 5 && lean.name !== selected && !['Stay Senior', 'Engineering Manager'].includes(selected) && scores[lean.id] > 0) {
+    mm.innerHTML = `<div class="mismatch-note">You chose <b>${escHtml(selected)}</b>; your entries lean <b>${lean.name}</b>. Not a problem, but it is the gap to close: the next six months of entries should start reading like ${escHtml(selected)} work, or the hypothesis should change.</div>`;
+  } else mm.innerHTML = '';
+}
+
+function chooseShape(id) {
+  const s = PATHS.find(x => x.id === id); if (!s) return;
+  const p = state.profile;
+  const matrix = MATRIX[p.track] || {};
+  const comp = matrix[s.primaryCompetency] ? s.primaryCompetency : Object.keys(matrix)[0];
+  const atTarget = matrix[comp] && matrix[comp][p.targetLevel];
+  state.careerDirection = state.careerDirection || {};
+  state.careerDirection.archetype = s.name;
+  // Pre-fill into state (not just the inputs), because renderExplore repaints the form from state.
+  const d = state.careerDirection;
+  const typedH = document.getElementById('dir-hypothesis').value.trim();
+  const typedM = document.getElementById('dir-meaning').value.trim();
+  if (typedH) d.hypothesis = typedH;
+  if (typedM) d.meaning = typedM;
+  if (!d.hypothesis) d.hypothesis = `I want to become the ${s.name} kind of ${p.targetLevel}: owning ___, influencing ___.`;
+  if (!d.meaning) d.meaning = `The work: ${s.oneLine}\nThe week: ${s.week}\nWho recognizes it: ${atTarget ? `${comp} at ${p.targetLevel} means "${atTarget}".` : ''}`.trim();
+  d.experiments = readExperimentRows().length ? readExperimentRows() : (d.experiments || []);
+  saveState();
+  openShapeId = id;
+  renderExplore();
+  showToast(`Direction: ${s.name}. Edit the hypothesis, add experiments, save.`);
+  document.getElementById('direction-block').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function saveReflection(el) {
+  state.careerDirection = state.careerDirection || {};
+  state.careerDirection.reflections = state.careerDirection.reflections || {};
+  state.careerDirection.reflections[el.dataset.qid] = el.value.trim();
+  saveState();
+}
+
+function renderExperimentRows(exps) {
+  const rows = exps.length ? exps : [{ what: '', by: '', signal: '' }];
+  document.getElementById('exp-rows').innerHTML = rows.map((e, i) => `
+    <div class="exp-row">
+      <input type="text" class="exp-what" placeholder="What (something you can start this week)" value="${escHtml(e.what || '')}" />
+      <input type="date" class="exp-by" value="${escHtml(e.by || '')}" />
+      <input type="text" class="exp-signal" placeholder="Signal it worked" value="${escHtml(e.signal || '')}" />
+      <button class="btn-x" title="Remove" onclick="removeExperimentRow(${i})">×</button>
+    </div>`).join('');
+}
+function readExperimentRows() {
+  return [...document.querySelectorAll('#exp-rows .exp-row')].map(r => ({
+    what: r.querySelector('.exp-what').value.trim(),
+    by: r.querySelector('.exp-by').value,
+    signal: r.querySelector('.exp-signal').value.trim()
+  })).filter(e => e.what || e.by || e.signal);
+}
+function addExperimentRow() { const cur = readExperimentRows(); cur.push({ what: '', by: '', signal: '' }); renderExperimentRows(cur); }
+function removeExperimentRow(i) { const cur = readExperimentRows(); cur.splice(i, 1); renderExperimentRows(cur); }
+
+function saveDirection() {
+  const d = state.careerDirection || {};
+  d.hypothesis = document.getElementById('dir-hypothesis').value.trim();
+  d.meaning = document.getElementById('dir-meaning').value.trim();
+  d.experiments = readExperimentRows();
+  d.updatedAt = todayStr();
+  if (!d.archetype) d.archetype = 'Undecided';
+  state.careerDirection = d;
+  saveState();
+  renderExplore();
+  showToast('Direction saved to your profile.');
+}
+
+function directionAsText() {
+  const d = state.careerDirection || {}; const p = state.profile;
+  const lines = [`${p.name} — career direction (${p.currentLevel} → ${p.targetLevel})`, `Shape: ${d.archetype || 'Undecided'}`, ''];
+  if (d.hypothesis) lines.push('Hypothesis', d.hypothesis, '');
+  if (d.meaning) lines.push(`What it means at ${p.targetLevel}`, d.meaning, '');
+  if (d.experiments && d.experiments.length) { lines.push('Experiments (90 days)'); d.experiments.forEach(e => lines.push(`• ${e.what}${e.by ? ' — by ' + e.by : ''}${e.signal ? ' — signal: ' + e.signal : ''}`)); lines.push(''); }
+  const r = d.reflections || {};
+  const answered = EXPLORE_QUESTIONS.filter(q => r[q.id]);
+  if (answered.length) { lines.push('Reflections'); answered.forEach(q => lines.push(`${q.label}: ${r[q.id]}`)); lines.push(''); }
+  lines.push('One question for my manager: does this organization have this role, and is it crowded?');
+  return lines.join('\n');
+}
+function copyDirection() {
+  const text = directionAsText();
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => showToast('Copied. Paste it into your 1:1 notes.'), () => prompt('Copy this:', text));
+  } else prompt('Copy this:', text);
+}
+
+function renderDirectionCard() {
+  const el = document.getElementById('dash-direction'); if (!el) return;
+  const d = state.careerDirection;
+  if (!d || !d.archetype) {
+    el.innerHTML = `<div class="dir-summary"><div class="dir-arch">NO DIRECTION SET</div>Most ladders tell you how to get to the next level, not what kind of engineer to become there. <a href="#" onclick="showPage('explore');return false;" style="color:var(--cyan)">Explore the shapes →</a></div>`;
+    return;
+  }
+  const next = (d.experiments || []).filter(e => e.what).sort((a, b) => (a.by || '9999').localeCompare(b.by || '9999'))[0];
+  el.innerHTML = `<div class="dir-summary">
+    <div class="dir-arch">${escHtml(d.archetype).toUpperCase()}${d.updatedAt ? ' · ' + d.updatedAt : ''}</div>
+    <div>${escHtml(d.hypothesis || 'No hypothesis written yet.')}</div>
+    ${next ? `<div class="dir-exp">Next experiment: ${escHtml(next.what)}${next.by ? ' · by ' + next.by : ''}</div>` : ''}
+    <div class="dir-exp"><a href="#" onclick="showPage('explore');return false;" style="color:var(--cyan)">Open Explore →</a></div>
+  </div>`;
+}
+
+
+// ─────────────────────────────────────────────
+// PROFILE MENU (top bar)
+// ─────────────────────────────────────────────
+function toggleMenu(ev) {
+  if (ev) ev.stopPropagation();
+  const m = document.getElementById('profile-menu'); const b = document.getElementById('avatar-btn');
+  const open = !m.classList.contains('open');
+  m.classList.toggle('open', open); b.setAttribute('aria-expanded', String(open));
+}
+function closeMenu() {
+  const m = document.getElementById('profile-menu'); const b = document.getElementById('avatar-btn');
+  if (m) m.classList.remove('open'); if (b) b.setAttribute('aria-expanded', 'false');
+}
+document.addEventListener('click', (e) => { if (!e.target.closest('.menu-wrap')) closeMenu(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
+</script>
+</body>
+</html>

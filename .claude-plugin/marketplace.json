@@ -1,0 +1,14 @@
+{
+  "name": "careerpillar",
+  "owner": {
+    "name": "Tiffany Jachja"
+  },
+  "plugins": [
+    {
+      "name": "careerpillar",
+      "source": "./plugins/careerpillar",
+      "description": "careerpillar, a career explorer: log accomplishments, map them to a competency matrix, work out what kind of engineer you want to become, and generate reviews and promotion packets."
+    }
+  ],
+  "description": "careerpillar, a career explorer: log accomplishments, map them to a competency matrix, work out what kind of engineer you want to become, and generate reviews and promotion packets."
+}

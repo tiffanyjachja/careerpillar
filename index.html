@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>careerpillar</title>
+<meta name="description" content="A career explorer. Log your work, map it to a competency matrix, find the kind of engineer you want to become, and build your case. Caterpillar today, something with wings later.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐛</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:ital,wght@0,400;0,600;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bubblegum: #ff5fa8;
+    --bubblegum-deep: #e63d8c;
+    --lilac: #a78bfa;
+    --lilac-deep: #7c5ce6;
+    --peach: #ffb37a;
+    --mint: #7ee8b4;
+    --butter: #fff2a8;
+    --sky: #9fdcff;
+    --cream: #fff7fb;
+    --ink: #3b2252;
+    --ink-soft: #6b4f85;
+    --card: #ffffff;
+    --shadow: 0 12px 0 -6px rgba(230, 61, 140, .22), 0 20px 40px -20px rgba(124, 92, 230, .35);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --cream: #1d1430; --ink: #fff3fa; --ink-soft: #d7c6ef; --card: #2a1d44;
+      --shadow: 0 12px 0 -6px rgba(255, 95, 168, .25), 0 20px 40px -20px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"] {
+    --cream: #1d1430; --ink: #fff3fa; --ink-soft: #d7c6ef; --card: #2a1d44;
+    --shadow: 0 12px 0 -6px rgba(255, 95, 168, .25), 0 20px 40px -20px rgba(0,0,0,.6);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--cream); color: var(--ink);
+    font-family: Nunito, ui-rounded, system-ui, sans-serif; font-size: 18px; line-height: 1.55;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 10% 10%, rgba(255,95,168,.14), transparent 40%),
+      radial-gradient(circle at 90% 30%, rgba(167,139,250,.16), transparent 40%),
+      radial-gradient(circle at 30% 90%, rgba(159,220,255,.18), transparent 40%);
+    background-attachment: fixed;
+  }
+  h1, h2, h3, .display { font-family: Fredoka, Nunito, ui-rounded, system-ui, sans-serif; letter-spacing: -.01em; }
+  a { color: var(--bubblegum-deep); }
+  code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .wrap { width: min(1100px, 100% - 32px); margin-inline: auto; min-width: 0; max-width: 100%; }
+
+  /* progress bar */
+  .progress { position: fixed; inset: 0 0 auto 0; height: 6px; z-index: 50; background: linear-gradient(90deg, var(--bubblegum), var(--lilac), var(--sky)); transform-origin: 0 50%; transform: scaleX(0); }
+  @supports (animation-timeline: scroll()) {
+    .progress { animation: grow linear both; animation-timeline: scroll(root); }
+    @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  }
+
+  /* stickers + pills */
+  .pill { display: inline-flex; align-items: center; gap: .4em; padding: .35em .9em; border-radius: 999px; font-weight: 800; font-size: .85rem; background: var(--card); color: var(--ink); border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); }
+  .pill.pink { background: var(--bubblegum); color: #fff; }
+  .pill.lilac { background: var(--lilac); color: #fff; }
+  .pill.peach { background: var(--peach); }
+  .pill.mint { background: var(--mint); }
+  .pill.butter { background: var(--butter); }
+  .sticker { position: absolute; font-size: 2.2rem; filter: drop-shadow(0 4px 0 rgba(59,34,82,.15)); user-select: none; }
+
+  /* hero */
+  .hero { min-height: 100svh; display: grid; grid-template-columns: minmax(0, 1fr); place-items: center; text-align: center; position: relative; padding: 80px 0 40px; }
+  .hero .wordmark { font-size: clamp(2.4rem, 12vw, 8.5rem); font-weight: 700; line-height: .95; margin: 0; overflow-wrap: anywhere; background: linear-gradient(90deg, var(--bubblegum-deep), var(--lilac-deep) 55%, var(--bubblegum)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hero .tag { font-family: Fredoka; font-size: clamp(1.2rem, 3.2vw, 1.8rem); font-weight: 500; color: var(--ink-soft); margin: 14px 0 0; }
+  .hero .pills { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 26px; }
+  .hero-art { width: min(560px, 90vw); margin: 10px auto 0; }
+  .hero-art svg { width: 100%; height: auto; display: block; }
+  .scroll-cue { position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%); font-weight: 800; font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-soft); }
+  .scroll-cue span { display: block; font-size: 1.4rem; animation: bob 1.4s ease-in-out infinite; }
+  @keyframes bob { 0%,100% { transform: translateY(0) } 50% { transform: translateY(6px) } }
+  .float { animation: floaty 5s ease-in-out infinite; }
+  .float.d1 { animation-delay: -1.2s } .float.d2 { animation-delay: -2.6s } .float.d3 { animation-delay: -3.9s }
+  @keyframes floaty { 0%,100% { transform: translateY(0) rotate(-4deg) } 50% { transform: translateY(-12px) rotate(5deg) } }
+
+  /* reveal */
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+
+  /* statement */
+  .statement { padding: 18vh 0; text-align: center; }
+  .statement h2 { font-size: clamp(2rem, 6vw, 4rem); font-weight: 700; line-height: 1.08; margin: 0 auto; max-width: 18ch; }
+  .statement .hl { background: linear-gradient(transparent 55%, var(--butter) 55%); padding: 0 .1em; }
+  .statement p { max-width: 54ch; margin: 24px auto 0; color: var(--ink-soft); font-size: 1.15rem; }
+
+  /* sticky scrolly */
+  .scrolly { display: grid; grid-template-columns: 1fr; gap: 24px; position: relative; padding: 10vh 0; }
+  .scrolly .graphic { position: sticky; top: 12vh; height: 56svh; display: grid; place-items: center; order: -1; z-index: 1; }
+  .scrolly .graphic .stage { width: min(420px, 86vw); aspect-ratio: 1; border-radius: 40px; background: var(--card); border: 4px solid var(--ink); box-shadow: 8px 8px 0 var(--ink); display: grid; place-items: center; position: relative; overflow: hidden; }
+  .stage .scene { position: absolute; inset: 0; display: grid; place-items: center; opacity: 0; transform: scale(.85); transition: opacity .45s ease, transform .45s cubic-bezier(.2,.9,.3,1.3); }
+  .stage .scene.on { opacity: 1; transform: scale(1); }
+  .stage .scene svg { width: 78%; height: auto; }
+  .stage .label { position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); }
+  .steps { display: flex; flex-direction: column; gap: 40vh; padding-block: 10vh 30vh; }
+  .step { background: var(--card); border: 4px solid var(--ink); border-radius: 28px; padding: 26px 28px; box-shadow: var(--shadow); opacity: .45; transform: scale(.98); transition: opacity .4s, transform .4s; }
+  .step.active { opacity: 1; transform: scale(1); }
+  .step .num { font-family: Fredoka; font-weight: 700; font-size: .9rem; letter-spacing: .14em; text-transform: uppercase; color: var(--bubblegum-deep); }
+  .step h3 { font-size: 1.8rem; margin: 6px 0 10px; }
+  .step p { margin: 0 0 12px; color: var(--ink-soft); }
+  .step .cmds { display: flex; flex-wrap: wrap; gap: 8px; }
+  .cmd { font-family: ui-monospace, Menlo, monospace; font-size: .8rem; font-weight: 700; padding: .3em .7em; border-radius: 10px; background: var(--cream); border: 2px solid var(--ink); }
+  @media (min-width: 880px) {
+    .scrolly { grid-template-columns: 1fr 1fr; gap: 48px; }
+    .scrolly .graphic { order: 0; height: 76svh; top: 12vh; }
+    .steps { gap: 50vh; }
+  }
+
+  /* skills grid */
+  .skills { padding: 12vh 0; }
+  .skills h2, .why h2, .cta h2 { font-size: clamp(2rem, 5vw, 3.2rem); margin: 0 0 8px; }
+  .skills .sub, .why .sub { color: var(--ink-soft); margin: 0 0 32px; max-width: 60ch; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 18px; }
+  .card { background: var(--card); border: 3px solid var(--ink); border-radius: 22px; padding: 18px; box-shadow: 5px 5px 0 var(--ink); transition: transform .2s, box-shadow .2s; position: relative; }
+  .card:hover { transform: translate(-2px,-2px) rotate(-.6deg); box-shadow: 8px 8px 0 var(--ink); }
+  .card .emoji { font-size: 1.8rem; }
+  .card h4 { margin: 8px 0 6px; font-family: ui-monospace, Menlo, monospace; font-size: .95rem; }
+  .card p { margin: 0; font-size: .95rem; color: var(--ink-soft); }
+  .card .who { position: absolute; top: 12px; right: 12px; font-size: .7rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; padding: .2em .6em; border-radius: 999px; background: var(--butter); color: var(--ink); border: 2px solid var(--ink); }
+
+  /* why */
+  .why { padding: 10vh 0; }
+  .why .row { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
+  .blob { padding: 24px; border-radius: 30px 30px 30px 8px; border: 3px solid var(--ink); box-shadow: 5px 5px 0 var(--ink); }
+  .blob.pink { background: #ffd6ea; } .blob.lilac { background: #e6ddff; } .blob.mint { background: #d6f8e6; } .blob.peach { background: #ffe5d0; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .blob { color: #2a1d44; } }
+  :root[data-theme="dark"] .blob { color: #2a1d44; }
+  .blob h3 { margin: 0 0 6px; font-size: 1.3rem; }
+  .blob p { margin: 0; font-size: 1rem; }
+
+  /* cta */
+  .cta { padding: 14vh 0 10vh; text-align: center; position: relative; }
+  .cta .buttons { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin: 26px 0 22px; }
+  .btn { font-family: Fredoka; font-weight: 600; font-size: 1.15rem; padding: .7em 1.4em; border-radius: 999px; border: 3px solid var(--ink); box-shadow: 5px 5px 0 var(--ink); text-decoration: none; color: var(--ink); background: var(--card); transition: transform .15s, box-shadow .15s; }
+  .btn:hover { transform: translate(-2px,-2px); box-shadow: 7px 7px 0 var(--ink); }
+  .btn.primary { background: var(--bubblegum); color: #fff; }
+  .btn.secondary { background: var(--lilac); color: #fff; }
+  pre.install { text-align: left; display: inline-block; margin: 0 auto; background: var(--ink); color: #ffe4f3; padding: 18px 22px; border-radius: 18px; font-size: .9rem; line-height: 1.6; max-width: 100%; overflow-x: auto; }
+  pre.install .c { color: #c9b8e8; }
+  footer { text-align: center; padding: 40px 0 60px; color: var(--ink-soft); font-size: .95rem; }
+  footer a { font-weight: 800; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0s !important; animation-iteration-count: 1 !important; transition-duration: 0s !important; scroll-behavior: auto !important; }
+    .reveal { opacity: 1; transform: none; }
+    .step { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"></div>
+
+<header class="hero">
+  <span class="sticker float d1" style="top:14%; left:8%">🌸</span>
+  <span class="sticker float d2" style="top:22%; right:10%">✨</span>
+  <span class="sticker float d3" style="bottom:22%; left:14%">🎀</span>
+  <span class="sticker float" style="bottom:28%; right:12%">🦋</span>
+  <div class="wrap">
+    <div class="hero-art" aria-hidden="true">
+      <svg viewBox="0 0 600 220">
+        <path d="M 60 170 Q 180 60 300 120 T 500 80" fill="none" stroke="#a78bfa" stroke-width="5" stroke-dasharray="2 14" stroke-linecap="round"/>
+        <path d="M 30 185 Q 110 140 190 185 Q 110 225 30 185 Z" fill="#7ee8b4"/>
+        <g>
+          <circle cx="70" cy="165" r="20" fill="#b9f0c9" stroke="#3b2252" stroke-width="4"/>
+          <circle cx="100" cy="158" r="20" fill="#a4ebba" stroke="#3b2252" stroke-width="4"/>
+          <circle cx="130" cy="152" r="20" fill="#8fe5ac" stroke="#3b2252" stroke-width="4"/>
+          <circle cx="163" cy="150" r="24" fill="#ffd6ea" stroke="#3b2252" stroke-width="4"/>
+          <path d="M 155 128 q -6 -20 -16 -24 M 171 128 q 6 -20 16 -24" fill="none" stroke="#3b2252" stroke-width="4" stroke-linecap="round"/>
+          <circle cx="139" cy="104" r="5" fill="#ff5fa8"/><circle cx="187" cy="104" r="5" fill="#ff5fa8"/>
+          <circle cx="157" cy="147" r="3.5" fill="#3b2252"/><circle cx="171" cy="147" r="3.5" fill="#3b2252"/>
+          <path d="M 157 160 q 7 7 14 0" fill="none" stroke="#3b2252" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="152" cy="156" r="4" fill="#ff9fcd" opacity=".8"/><circle cx="176" cy="156" r="4" fill="#ff9fcd" opacity=".8"/>
+        </g>
+        <g transform="translate(480 80)">
+          <path d="M 0 0 C -50 -64, -100 -42, -78 8 C -92 44, -42 64, -4 22 Z" fill="#ff5fa8" stroke="#3b2252" stroke-width="4"/>
+          <path d="M 0 0 C 50 -64, 100 -42, 78 8 C 92 44, 42 64, 4 22 Z" fill="#a78bfa" stroke="#3b2252" stroke-width="4"/>
+          <circle cx="-56" cy="-12" r="8" fill="#fff" opacity=".8"/><circle cx="56" cy="-12" r="8" fill="#fff" opacity=".8"/>
+          <ellipse cx="0" cy="10" rx="7" ry="30" fill="#3b2252"/>
+          <path d="M -4 -18 q -8 -18 -18 -22 M 4 -18 q 8 -18 18 -22" fill="none" stroke="#3b2252" stroke-width="3" stroke-linecap="round"/>
+        </g>
+      </svg>
+    </div>
+    <h1 class="wordmark">careerpillar</h1>
+    <p class="tag">caterpillar today. something with wings later.</p>
+    <div class="pills">
+      <span class="pill pink">🐛 a career explorer</span>
+      <span class="pill lilac">✨ 11 Claude Code skills</span>
+      <span class="pill butter">🔒 stays on your machine</span>
+    </div>
+  </div>
+  <div class="scroll-cue">scroll<span>↓</span></div>
+</header>
+
+<section class="statement wrap reveal">
+  <h2>Ladders tell you how to <span class="hl">climb</span>. Not who to <span class="hl">become</span>.</h2>
+  <p>careerpillar starts from the person, not the rung. Log the work you actually did, see where it already points, pick a direction on purpose, and walk into your review with receipts.</p>
+</section>
+
+<section class="scrolly wrap" id="how">
+  <div class="steps">
+    <article class="step" data-scene="0">
+      <div class="num">stage one · egg</div>
+      <h3>Log it while it's warm</h3>
+      <p>One conversation per accomplishment: what you did, who it helped, the number if there is one, and the links that prove it. Months behind? Backfill from your merged pull requests.</p>
+      <div class="cmds"><span class="cmd">/careerpillar:log</span><span class="cmd">/careerpillar:backfill</span></div>
+    </article>
+    <article class="step" data-scene="1">
+      <div class="num">stage two · caterpillar</div>
+      <h3>Eat everything, map everything</h3>
+      <p>Every entry lands on a competency matrix. Coverage shows up as strong, thin, or gap against your target level, so the fuzzy feeling of "am I ready?" turns into a list.</p>
+      <div class="cmds"><span class="cmd">/careerpillar:status</span><span class="cmd">/careerpillar:suggest</span><span class="cmd">/careerpillar:vibe-check</span></div>
+    </article>
+    <article class="step" data-scene="2">
+      <div class="num">stage three · chrysalis</div>
+      <h3>Find your shape</h3>
+      <p>Senior is a destination, not a waypoint. The explorer reads the shape of your work, asks what kind of week you want, and hands you a hypothesis plus 90-day experiments to test it. Staying senior and moving into management both count as answers.</p>
+      <div class="cmds"><span class="cmd">/careerpillar:explore</span></div>
+    </article>
+    <article class="step" data-scene="3">
+      <div class="num">stage four · butterfly</div>
+      <h3>Make the case</h3>
+      <p>Promotion packet, performance review, or self-review, generated from your evidence and your company's own template. Managers get a readiness check, a 360 draft, and a plan for peer feedback.</p>
+      <div class="cmds"><span class="cmd">/careerpillar:export</span><span class="cmd">/careerpillar:manager-review</span><span class="cmd">/careerpillar:peer-review</span><span class="cmd">/careerpillar:peer-feedback</span></div>
+    </article>
+  </div>
+
+  <div class="graphic" aria-hidden="true">
+    <div class="stage">
+      <div class="scene on" data-scene="0">
+        <svg viewBox="0 0 200 200">
+          <ellipse cx="100" cy="170" rx="70" ry="14" fill="#7ee8b4"/>
+          <path d="M 100 30 C 60 30, 40 90, 40 120 C 40 160, 70 180, 100 180 C 130 180, 160 160, 160 120 C 160 90, 140 30, 100 30 Z" fill="#fff2a8" stroke="#3b2252" stroke-width="5"/>
+          <circle cx="80" cy="90" r="8" fill="#ff5fa8" opacity=".6"/><circle cx="120" cy="120" r="6" fill="#a78bfa" opacity=".6"/><circle cx="95" cy="145" r="5" fill="#ff5fa8" opacity=".6"/>
+          <path d="M 70 70 q 10 -14 22 -8" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".8"/>
+        </svg>
+        <span class="pill butter label">🥚 log</span>
+      </div>
+      <div class="scene" data-scene="1">
+        <svg viewBox="0 0 200 200">
+          <path d="M 20 150 Q 100 110 180 150 Q 100 190 20 150 Z" fill="#7ee8b4"/>
+          <circle cx="50" cy="128" r="18" fill="#b9f0c9" stroke="#3b2252" stroke-width="5"/>
+          <circle cx="78" cy="122" r="18" fill="#a4ebba" stroke="#3b2252" stroke-width="5"/>
+          <circle cx="106" cy="118" r="18" fill="#8fe5ac" stroke="#3b2252" stroke-width="5"/>
+          <circle cx="138" cy="116" r="22" fill="#ffd6ea" stroke="#3b2252" stroke-width="5"/>
+          <path d="M 130 96 q -6 -18 -16 -22 M 146 96 q 6 -18 16 -22" fill="none" stroke="#3b2252" stroke-width="4" stroke-linecap="round"/>
+          <circle cx="114" cy="74" r="5" fill="#ff5fa8"/><circle cx="162" cy="74" r="5" fill="#ff5fa8"/>
+          <circle cx="132" cy="113" r="3.5" fill="#3b2252"/><circle cx="146" cy="113" r="3.5" fill="#3b2252"/>
+          <path d="M 132 126 q 7 7 14 0" fill="none" stroke="#3b2252" stroke-width="3" stroke-linecap="round"/>
+          <g fill="#ff5fa8"><circle cx="40" cy="60" r="4"/><circle cx="70" cy="40" r="3"/><circle cx="175" cy="50" r="3"/></g>
+        </svg>
+        <span class="pill mint label">🐛 map</span>
+      </div>
+      <div class="scene" data-scene="2">
+        <svg viewBox="0 0 200 200">
+          <path d="M 100 20 L 100 40" stroke="#3b2252" stroke-width="5" stroke-linecap="round"/>
+          <path d="M 100 40 C 60 40, 55 90, 60 120 C 65 160, 85 180, 100 180 C 115 180, 135 160, 140 120 C 145 90, 140 40, 100 40 Z" fill="#a78bfa" stroke="#3b2252" stroke-width="5"/>
+          <path d="M 75 70 Q 100 60 125 70 M 70 100 Q 100 90 130 100 M 72 130 Q 100 120 128 130" fill="none" stroke="#3b2252" stroke-width="4" stroke-linecap="round" opacity=".5"/>
+          <path d="M 100 70 q 14 20 0 40 q -14 20 0 40" fill="none" stroke="#ff5fa8" stroke-width="4" stroke-linecap="round" opacity=".9"/>
+          <g fill="#fff2a8"><path d="M 40 50 l 3 9 l 9 3 l -9 3 l -3 9 l -3 -9 l -9 -3 l 9 -3 Z"/><path d="M 165 140 l 2 6 l 6 2 l -6 2 l -2 6 l -2 -6 l -6 -2 l 6 -2 Z"/></g>
+        </svg>
+        <span class="pill lilac label">🫧 explore</span>
+      </div>
+      <div class="scene" data-scene="3">
+        <svg viewBox="0 0 200 200">
+          <g transform="translate(100 100)">
+            <path d="M 0 0 C -60 -76, -120 -50, -94 10 C -110 52, -50 76, -5 26 Z" fill="#ff5fa8" stroke="#3b2252" stroke-width="5"/>
+            <path d="M 0 0 C 60 -76, 120 -50, 94 10 C 110 52, 50 76, 5 26 Z" fill="#a78bfa" stroke="#3b2252" stroke-width="5"/>
+            <g fill="#fff" opacity=".8"><circle cx="-66" cy="-16" r="9"/><circle cx="66" cy="-16" r="9"/><circle cx="-52" cy="30" r="5"/><circle cx="52" cy="30" r="5"/></g>
+            <ellipse cx="0" cy="12" rx="8" ry="36" fill="#3b2252"/>
+            <path d="M -4 -22 q -10 -22 -22 -26 M 4 -22 q 10 -22 22 -26" fill="none" stroke="#3b2252" stroke-width="4" stroke-linecap="round"/>
+            <circle cx="-26" cy="-50" r="4" fill="#3b2252"/><circle cx="26" cy="-50" r="4" fill="#3b2252"/>
+          </g>
+          <g fill="#ffb37a"><path d="M 30 40 l 3 9 l 9 3 l -9 3 l -3 9 l -3 -9 l -9 -3 l 9 -3 Z"/><path d="M 170 160 l 2 6 l 6 2 l -6 2 l -2 6 l -2 -6 l -6 -2 l 6 -2 Z"/><path d="M 160 40 l 2 6 l 6 2 l -6 2 l -2 6 l -2 -6 l -6 -2 l 6 -2 Z"/></g>
+        </svg>
+        <span class="pill pink label">🦋 make the case</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="skills wrap" id="skills">
+  <h2 class="reveal">Eleven little skills, one big glow-up</h2>
+  <p class="sub reveal">Installed as a Claude Code plugin. Each one is a conversation, not a form.</p>
+  <div class="grid">
+    <div class="card reveal"><div class="emoji">🌱</div><h4>/careerpillar:load</h4><p>Start or resume. Shows where you left off and what to do next.</p></div>
+    <div class="card reveal"><div class="emoji">📝</div><h4>/careerpillar:log</h4><p>Log one accomplishment with a real date, a beneficiary, a number, and evidence links.</p></div>
+    <div class="card reveal"><div class="emoji">⏪</div><h4>/careerpillar:backfill</h4><p>Rebuild months of history from merged PRs and issues, confirmed in batches.</p></div>
+    <div class="card reveal"><div class="emoji">🧭</div><h4>/careerpillar:explore</h4><p>What kind of senior or staff engineer do you want to be? Hypothesis plus 90-day experiments.</p></div>
+    <div class="card reveal"><div class="emoji">📊</div><h4>/careerpillar:status</h4><p>Coverage snapshot and gap analysis toward your target level.</p></div>
+    <div class="card reveal"><div class="emoji">💡</div><h4>/careerpillar:suggest</h4><p>What to focus on next, with one concrete action.</p></div>
+    <div class="card reveal"><div class="emoji">📦</div><h4>/careerpillar:export</h4><p>Promotion packet, performance review, or self-review from a pluggable template.</p></div>
+    <div class="card reveal"><div class="emoji">🌡️</div><h4>/careerpillar:vibe-check</h4><p>Quarterly pulse across eight dimensions. One snapshot, one action.</p></div>
+    <div class="card reveal"><span class="who">managers</span><div class="emoji">🔍</div><h4>/careerpillar:manager-review</h4><p>Seven-point promo-readiness check and a full review draft for a report.</p></div>
+    <div class="card reveal"><span class="who">managers</span><div class="emoji">🤝</div><h4>/careerpillar:peer-review</h4><p>A 360-style review, collected conversationally, written at sponsor quality.</p></div>
+    <div class="card reveal"><span class="who">managers</span><div class="emoji">💌</div><h4>/careerpillar:peer-feedback</h4><p>Plan who to ask, draft the ask, track status, store quotes verbatim.</p></div>
+  </div>
+</section>
+
+<section class="why wrap" id="why">
+  <h2 class="reveal">House rules</h2>
+  <p class="sub reveal">The parts that don't change, whatever your company's ladder looks like.</p>
+  <div class="row">
+    <div class="blob pink reveal"><h3>🔒 Your data stays home</h3><p>One JSON file in your home directory. The dashboard uses your browser's storage. Nothing is uploaded, ever.</p></div>
+    <div class="blob lilac reveal"><h3>🧩 Bring your own ladder</h3><p>Drop in your company's matrix, packet template, and role names as private files. The defaults are generic on purpose.</p></div>
+    <div class="blob mint reveal"><h3>🧾 Receipts or it didn't happen</h3><p>Every entry wants a real date, a stakeholder, a number or an honest "none", and a link. That's what survives a promo committee.</p></div>
+    <div class="blob peach reveal"><h3>🌼 Senior is a real destination</h3><p>Staying senior, going staff, or moving into management are all legitimate answers. The explorer treats them that way.</p></div>
+  </div>
+</section>
+
+<section class="cta wrap" id="start">
+  <span class="sticker float d2" style="top:0; left:4%">💖</span>
+  <span class="sticker float d1" style="top:10%; right:6%">🌈</span>
+  <h2 class="reveal">Ready to grow some wings?</h2>
+  <div class="buttons reveal">
+    <a class="btn primary" href="app.html">Open the dashboard</a>
+    <a class="btn secondary" href="https://github.com/tiffanyjachja/careerpillar">View on GitHub</a>
+  </div>
+  <pre class="install reveal"><span class="c"># in your terminal</span>
+claude plugin marketplace add tiffanyjachja/careerpillar
+claude plugin install careerpillar@careerpillar
+
+<span class="c"># then, inside Claude Code</span>
+/careerpillar:load</pre>
+</section>
+
+<footer class="wrap">
+  Made with 🐛 by <a href="https://jachja.com">Tiffany Jachja</a> · Apache-2.0 · caterpillar today, something with wings later.
+</footer>
+
+<script>
+(function () {
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // reveal on view
+  var reveals = document.querySelectorAll('.reveal');
+  if (reduce || !('IntersectionObserver' in window)) {
+    reveals.forEach(function (el) { el.classList.add('in'); });
+  } else {
+    var ro = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); ro.unobserve(e.target); } });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+    reveals.forEach(function (el) { ro.observe(el); });
+  }
+
+  // sticky scene switching
+  var steps = document.querySelectorAll('.step');
+  var scenes = document.querySelectorAll('.scene');
+  function show(i) {
+    steps.forEach(function (s) { s.classList.toggle('active', s.dataset.scene == i); });
+    scenes.forEach(function (s) { s.classList.toggle('on', s.dataset.scene == i); });
+  }
+  show(0);
+  if ('IntersectionObserver' in window) {
+    var so = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) show(e.target.dataset.scene); });
+    }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
+    steps.forEach(function (s) { so.observe(s); });
+  } else {
+    steps.forEach(function (s) { s.classList.add('active'); });
+  }
+
+  // progress bar fallback when scroll-timeline is unsupported
+  if (!CSS.supports('animation-timeline: scroll()')) {
+    var bar = document.querySelector('.progress'), ticking = false;
+    window.addEventListener('scroll', function () {
+      if (ticking) return; ticking = true;
+      requestAnimationFrame(function () {
+        var h = document.documentElement, max = h.scrollHeight - h.clientHeight;
+        bar.style.transform = 'scaleX(' + (max > 0 ? h.scrollTop / max : 0) + ')';
+        ticking = false;
+      });
+    }, { passive: true });
+  }
+})();
+</script>
+</body>
+</html>

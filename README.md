@@ -3,32 +3,86 @@
 </p>
 
 <p align="center">
-  <img alt="stage: egg" src="https://img.shields.io/badge/stage-%F0%9F%A5%9A%20egg-FF7AB6?style=for-the-badge&labelColor=3B2A5A">
-  <img alt="made with care" src="https://img.shields.io/badge/made%20with-care%20%26%20coffee-8E7CFF?style=for-the-badge&labelColor=3B2A5A">
-  <img alt="for: people entering tech" src="https://img.shields.io/badge/for-people%20entering%20tech-FFB86C?style=for-the-badge&labelColor=3B2A5A">
+  <img alt="stage: caterpillar" src="https://img.shields.io/badge/stage-%F0%9F%90%9B%20caterpillar-7ee8b4?style=for-the-badge&labelColor=3B2A5A">
+  <img alt="11 Claude Code skills" src="https://img.shields.io/badge/skills-11-8E7CFF?style=for-the-badge&labelColor=3B2A5A">
+  <img alt="license Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-FF7AB6?style=for-the-badge&labelColor=3B2A5A">
 </p>
 
 <h1 align="center">careerpillar</h1>
 
 <p align="center"><strong>A career explorer.</strong><br>
-Map where you are, where you could go, and what the very next step looks like.</p>
+Log the work you actually did, map it to a competency matrix, work out what kind of engineer you want to become, and walk into your review with receipts.</p>
+
+<p align="center">
+  <a href="index.html">Landing page</a> · <a href="app.html">Dashboard</a> · <a href="#skills">Skills</a> · <a href="#customizing-for-your-company">Bring your own ladder</a>
+</p>
 
 ---
 
 ## Why this exists
 
-Career advice is usually a wall of text or a wall of job titles. Neither tells you where *you* are standing right now, or which direction is one step away instead of ten.
+Career ladders tell you how to climb. They rarely tell you who to become, or where you are standing right now.
 
-careerpillar starts from the person, not the ladder. You bring what you already know and can do. It shows the paths that open from there, what each one asks of you, and the smallest move that gets you closer.
+careerpillar starts from the person, not the rung. You bring the work you did. It shows which competencies that work already covers, where the gaps are against your target level, what kind of senior or staff engineer you are turning into, and the smallest next move. When review season comes, it writes the packet from your evidence.
 
-It grows out of years of coaching people making their first move into tech, and out of the habit of drawing the map on a whiteboard every time. This is the whiteboard, kept.
+It grew out of years of coaching people making their first moves in tech, and out of running real promotion cycles as an engineering manager. The packets that survive a committee all have the same bones: real dates, named stakeholders, a number or an honest "none", and a link for everything. The skills enforce those bones.
 
-## What it will do
+Everything stays on your machine. The dashboard keeps data in your browser's local storage, and the skills read and write one JSON file in your home directory. Nothing is uploaded anywhere.
 
-- **Place you on the map.** Start from your skills, interests, and constraints, not from a job title you have to pick first.
-- **Show the neighborhood.** Which roles are adjacent to where you are, and what makes them adjacent.
-- **Name the gap.** For any path, the concrete skills or experiences between here and there.
-- **Suggest the next step.** One small, doable move. Not a five-year plan.
+## What's included
+
+| Path | Purpose |
+|---|---|
+| `index.html` | Landing page. A scroll-driven tour of the project. |
+| `app.html` | Visual dashboard. Open it in any browser, no server needed. |
+| `plugins/careerpillar/` | Claude Code plugin with eleven skills (`/careerpillar:*`) |
+| `plugins/careerpillar/matrix.js` | The default competency matrix, shared by the dashboard and the skills |
+| `plugins/careerpillar/packet-template.md` | Default promotion-packet sections; override with your company's form |
+| `plugins/careerpillar/paths.md` | Shapes of senior and staff work used by the career explorer, with sources |
+| `plugins/careerpillar/paths.js` | The same shapes as data, for the dashboard's Explore page |
+| `plugins/careerpillar/SCHEMA.md` | The profile JSON schema (v2) and compatibility rules |
+
+## Getting started
+
+### Option A: Browser dashboard
+
+1. Clone or download this repo.
+2. Open `app.html` in your browser. A `file://` URL is fine.
+3. Fill out the setup screen: name, track (IC or Manager), current level, target level.
+4. Log accomplishments, view competency coverage, export your profile.
+5. Open **Explore** to work out what kind of senior or staff engineer you want to become.
+
+To hand the data to the Claude Code skills, click **Export Profile** and save the file as `~/careerpillar-profile.json`.
+
+### Option B: Claude Code plugin
+
+Install from this repo as a plugin marketplace:
+
+```bash
+claude plugin marketplace add tiffanyjachja/careerpillar
+claude plugin install careerpillar@careerpillar
+```
+
+Or inside a Claude Code session:
+
+```
+/plugin marketplace add tiffanyjachja/careerpillar
+/plugin install careerpillar@careerpillar
+```
+
+Then run:
+
+```
+/careerpillar:load
+```
+
+Claude walks you through setup if you have no profile yet, or resumes your session if you do. To reconstruct months of history from merged pull requests, run `/careerpillar:backfill` (uses the `gh` CLI, or a GitHub tool if one is connected).
+
+To develop the skills locally without installing, start Claude Code with the plugin directory:
+
+```bash
+claude --plugin-dir ./plugins/careerpillar
+```
 
 ## The metamorphosis
 
@@ -36,23 +90,129 @@ It grows out of years of coaching people making their first move into tech, and 
   <img src="assets/stages.svg" alt="Project stages: egg, caterpillar, chrysalis, butterfly" width="100%">
 </p>
 
-| Stage | What happens | Status |
+The four stages are also how the tool is organized. Each maps to a handful of skills.
+
+| Stage | What happens | Skills |
 |---|---|---|
-| 🥚 **Egg** | A name, an idea, a repo | ✅ you are here |
-| 🐛 **Caterpillar** | Eat everything: collect roles, skills, and paths into a model | ⬜ next |
-| 🫧 **Chrysalis** | The quiet part: shape the explorer, test it with real people, refine | ⬜ |
-| 🦋 **Butterfly** | Out in the world, helping people | ⬜ |
+| 🥚 **Egg** | Log it while it's warm | `log`, `backfill` |
+| 🐛 **Caterpillar** | Eat everything, map everything | `status`, `suggest`, `vibe-check` |
+| 🫧 **Chrysalis** | Find your shape | `explore` |
+| 🦋 **Butterfly** | Make the case | `export`, `manager-review`, `peer-review`, `peer-feedback` |
+
+## Skills
+
+| Command | What it does |
+|---|---|
+| `/careerpillar:load` | Start or resume a session; shows where you left off |
+| `/careerpillar:log` | Log a new accomplishment conversationally: real work date, beneficiaries, a number or an explicit "none", stakeholders, evidence links |
+| `/careerpillar:backfill` | Reconstruct history from merged PRs and issues: real dates, one link per piece of evidence, reviewers as stakeholders, confirmed in batches |
+| `/careerpillar:explore` | Career explorer: what kind of senior or staff engineer do you want to become, what that means here, and 90-day experiments to test it |
+| `/careerpillar:status` | Competency coverage snapshot and gap analysis toward your target level |
+| `/careerpillar:suggest` | Prioritized advice on what to focus on next: pattern analysis, scope signals, one concrete action |
+| `/careerpillar:export` | Generate a promotion packet (from a pluggable template, with a References section), performance review, or self-review summary |
+| `/careerpillar:vibe-check` | Quarterly pulse check across 8 dimensions; produces a snapshot and one concrete action |
+| `/careerpillar:manager-review` | Review a direct report's tracker; 7-point promo-readiness check and full review draft |
+| `/careerpillar:peer-review` | Write a 360-style performance review; collects peer input conversationally, produces a sponsor-quality document |
+| `/careerpillar:peer-feedback` | Managers: plan who to ask for packet feedback, draft the ask, track status, store quotes verbatim |
+
+## The profile file
+
+The dashboard and the skills share one file: `~/careerpillar-profile.json`.
+
+- **Browser to CLI**: Export from the dashboard, save as `~/careerpillar-profile.json`.
+- **CLI to browser**: The skills write to that file directly. Import it back into the dashboard with **Import Profile**.
+
+```json
+{
+  "profile": {
+    "name": "Your Name",
+    "currentLevel": "IC4",
+    "targetLevel": "IC5",
+    "track": "IC"
+  },
+  "accomplishments": [],
+  "customStakeholders": []
+}
+```
+
+Each accomplishment has `id`, `date` (when the work landed), `loggedAt`, `title`, `action`, `impact`, `metrics`, `competencies`, `level` (self-assessed), optional `assessedLevel`, `stakeholders`, `links` (one object per piece of evidence), and `tags`. The profile also holds `peerFeedback[]` and an optional `careerDirection`. Full schema and the v1 compatibility rules: [`plugins/careerpillar/SCHEMA.md`](plugins/careerpillar/SCHEMA.md). Files written by older versions still load.
+
+If you used this project under its previous name, the skills still read `~/eng-tracker-profile.json` and the matching override files until you rename them.
+
+Profile files contain real performance information about real people. The repo's `.gitignore` excludes `*profile*.json`; keep it that way.
+
+## The competency matrix
+
+**IC track:** Scope · Delivery · Design & Architecture · Collaboration & Citizenship · Process Improvement (levels IC2 to IC8)
+
+**Manager track:** Scope · Delivery · Collaboration & Citizenship · Process Improvement · Technical Strategy · Team Building (levels M3 to M6)
+
+Coverage is rated **STRONG** (3+ entries), **THIN** (1 to 2), or **GAP** (0) against the descriptors for your target level.
+
+The default matrix in `plugins/careerpillar/matrix.js` is a generic, industry-style ladder written in plain language. It is not any one company's leveling document.
+
+### Using your company's matrix
+
+Write a JSON file with the same shape as `DEFAULT_MATRIX`:
+
+```json
+{
+  "IC": { "Scope": { "IC3": "...", "IC4": "..." }, "Delivery": { "...": "..." } },
+  "Manager": { "Scope": { "M3": "...", "M4": "..." } }
+}
+```
+
+Then:
+
+- **Dashboard:** open the profile menu (your initial, top right) and choose **Import company matrix**. The file is stored in your browser only; **Use default matrix** removes it. Add an optional `levelNames` object (`{ "IC": { "IC4": "Senior Software Engineer" }, "Manager": { ... } }`) to show your company's titles next to the level keys.
+- **Skills:** save the same file as `~/careerpillar-matrix.json`. Every skill checks for it before falling back to the default.
+
+Keep company leveling documents out of this repo. The matrix file is already in `.gitignore`.
+
+## Customizing for your company
+
+Three optional files in your home directory override the defaults. None of them belong in a public repo.
+
+| File | Replaces | Used by |
+|---|---|---|
+| `~/careerpillar-matrix.json` | the competency matrix and optional level titles | all skills (dashboard: profile menu → **Import company matrix**) |
+| `~/careerpillar-packet-template.md` | promotion-packet sections and prompts | `/careerpillar:export promo` |
+| `~/careerpillar-paths.md` | role names and definitions for the career explorer | `/careerpillar:explore` |
+
+## Career explorer
+
+Most ladders tell you how to reach the next level, not what kind of engineer to become there. The explorer exists for that question, in two places.
+
+**In the dashboard (Explore page):** reads your logged work and shows where it already points across the four staff archetypes plus breadth-building and management; flags the premature-senior pattern, missing stakeholders, and back-filled dates; lets you open each shape to see the week, where it exists, what it means at your target level quoted from the matrix, what it does not mean, and which of your entries read as that shape; asks six reflection questions saved to your profile; and lets you choose a direction, write a hypothesis, and set 90-day experiments. **Copy for my 1:1** turns it into text to bring to your manager.
+
+**In Claude Code:** `/careerpillar:explore` reads the shape of your logged work, asks what kind of week you want, and gives you a hypothesis about what kind of senior or staff engineer you are becoming, what that means at your target level, what it does not mean, whether the opportunity exists where you are, and two or three 90-day experiments to test it. It draws on Will Larson's staff archetypes, Charity Majors's writing on levels and the premature-senior trap, and Gergely Orosz's career-path writing; sources are listed in `plugins/careerpillar/paths.md`. Staying senior and moving into management are treated as legitimate answers.
 
 ## Principles
 
 1. **Start where the person is.** No form that assumes you already know the answer.
-2. **Adjacent beats aspirational.** The best next step is the one you can take this month.
-3. **Honest about gaps.** Name what's missing plainly, then make it feel reachable.
-4. **Small and friendly.** If it needs a manual, it's too big.
+2. **Adjacent beats aspirational.** The best next step is the one you can take this quarter.
+3. **Receipts or it didn't happen.** Real dates, named stakeholders, a number or an honest "none", a link.
+4. **Senior is a real destination.** Staying senior, going staff, or moving into management all count.
 
-## Status
+## Requirements
 
-Just hatched. Nothing to run yet. Watch the repo if you want to see it grow legs, and then wings.
+- **Landing page and dashboard:** any modern browser. No dependencies, no install.
+- **Skills:** [Claude Code](https://claude.ai/code).
+
+## Contributing
+
+Issues and pull requests are welcome. Before opening a PR, run:
+
+```bash
+claude plugin validate .
+claude plugin validate plugins/careerpillar
+```
+
+Please do not include real names, company-internal URLs, or leveling documents in examples or tests.
+
+## License
+
+[Apache License 2.0](LICENSE)
 
 ---
 
