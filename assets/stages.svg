@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="150" viewBox="0 0 1200 150" role="img" aria-label="Project stages: egg, caterpillar, chrysalis, butterfly">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#FF7AB6"/><stop offset="1" stop-color="#8E7CFF"/></linearGradient>
+  </defs>
+  <style>
+    .t{font-family:ui-rounded,'SF Pro Rounded','Segoe UI',system-ui,sans-serif;fill:#3B2A5A;font-weight:700;font-size:22px}
+    .s{font-family:ui-rounded,'SF Pro Rounded','Segoe UI',system-ui,sans-serif;fill:#6B5B8E;font-size:15px}
+    .e{font-size:40px}
+  </style>
+  <line x1="150" y1="60" x2="1050" y2="60" stroke="url(#g)" stroke-width="5" stroke-linecap="round" opacity="0.5"/>
+  <g>
+    <circle cx="150" cy="60" r="42" fill="#FFE4F1" stroke="#FF7AB6" stroke-width="4"/>
+    <text x="150" y="74" text-anchor="middle" class="e">🥚</text>
+    <text x="150" y="118" text-anchor="middle" class="t">Egg</text>
+    <text x="150" y="140" text-anchor="middle" class="s">a name and an idea · you are here</text>
+  </g>
+  <g opacity="0.75">
+    <circle cx="450" cy="60" r="42" fill="#FFFFFF" stroke="#C9BDFF" stroke-width="4" stroke-dasharray="6 6"/>
+    <text x="450" y="74" text-anchor="middle" class="e">🐛</text>
+    <text x="450" y="118" text-anchor="middle" class="t">Caterpillar</text>
+    <text x="450" y="140" text-anchor="middle" class="s">eat everything: roles, skills, paths</text>
+  </g>
+  <g opacity="0.75">
+    <circle cx="750" cy="60" r="42" fill="#FFFFFF" stroke="#C9BDFF" stroke-width="4" stroke-dasharray="6 6"/>
+    <text x="750" y="74" text-anchor="middle" class="e">🫧</text>
+    <text x="750" y="118" text-anchor="middle" class="t">Chrysalis</text>
+    <text x="750" y="140" text-anchor="middle" class="s">the quiet part: shape, test, refine</text>
+  </g>
+  <g opacity="0.75">
+    <circle cx="1050" cy="60" r="42" fill="#FFFFFF" stroke="#C9BDFF" stroke-width="4" stroke-dasharray="6 6"/>
+    <text x="1050" y="74" text-anchor="middle" class="e">🦋</text>
+    <text x="1050" y="118" text-anchor="middle" class="t">Butterfly</text>
+    <text x="1050" y="140" text-anchor="middle" class="s">out in the world, helping people</text>
+  </g>
+</svg>

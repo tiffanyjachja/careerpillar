@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-label="careerpillar: a caterpillar follows a dotted path and becomes a butterfly">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFE4F1"/>
+      <stop offset="0.55" stop-color="#E9DDFF"/>
+      <stop offset="1" stop-color="#D6F3FF"/>
+    </linearGradient>
+    <linearGradient id="wing" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FF7AB6"/>
+      <stop offset="1" stop-color="#8E7CFF"/>
+    </linearGradient>
+    <linearGradient id="wing2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFB86C"/>
+      <stop offset="1" stop-color="#FF7AB6"/>
+    </linearGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="360" rx="28" fill="url(#sky)"/>
+
+  <!-- soft clouds -->
+  <g fill="#ffffff" opacity="0.55" filter="url(#soft)">
+    <ellipse cx="220" cy="70" rx="90" ry="26"/>
+    <ellipse cx="900" cy="300" rx="120" ry="30"/>
+    <ellipse cx="600" cy="40" rx="70" ry="20"/>
+  </g>
+
+  <!-- dotted path from caterpillar to butterfly -->
+  <path d="M 230 250 C 380 250, 420 120, 560 160 S 760 260, 900 150" fill="none" stroke="#8E7CFF" stroke-width="4" stroke-dasharray="2 14" stroke-linecap="round" opacity="0.8"/>
+
+  <!-- waypoints along the path -->
+  <g fill="#ffffff" stroke="#8E7CFF" stroke-width="3">
+    <circle cx="420" cy="178" r="9"/>
+    <circle cx="560" cy="160" r="9"/>
+    <circle cx="730" cy="236" r="9"/>
+  </g>
+
+  <!-- leaf under caterpillar -->
+  <path d="M 90 285 Q 190 230 300 285 Q 190 330 90 285 Z" fill="#9EE7B8"/>
+  <path d="M 100 285 L 290 285" stroke="#5CC98A" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- caterpillar -->
+  <g>
+    <circle cx="130" cy="260" r="22" fill="#B9F0C9" stroke="#5CC98A" stroke-width="3"/>
+    <circle cx="162" cy="252" r="22" fill="#A4EBBA" stroke="#5CC98A" stroke-width="3"/>
+    <circle cx="194" cy="246" r="22" fill="#8FE5AC" stroke="#5CC98A" stroke-width="3"/>
+    <circle cx="228" cy="244" r="26" fill="#FFD6E8" stroke="#FF7AB6" stroke-width="3"/>
+    <!-- antennae -->
+    <path d="M 220 220 q -6 -22 -18 -26 M 238 220 q 6 -22 18 -26" fill="none" stroke="#FF7AB6" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="202" cy="194" r="4" fill="#FF7AB6"/><circle cx="256" cy="194" r="4" fill="#FF7AB6"/>
+    <!-- face -->
+    <circle cx="222" cy="240" r="3.5" fill="#3B2A5A"/><circle cx="238" cy="240" r="3.5" fill="#3B2A5A"/>
+    <path d="M 222 254 q 8 7 16 0" fill="none" stroke="#3B2A5A" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- feet -->
+    <g stroke="#5CC98A" stroke-width="3" stroke-linecap="round">
+      <path d="M 122 280 v 10 M 138 280 v 10 M 154 272 v 10 M 170 272 v 10 M 186 266 v 10 M 202 266 v 10"/>
+    </g>
+  </g>
+
+  <!-- butterfly -->
+  <g transform="translate(900 150)">
+    <path d="M 0 0 C -70 -90, -140 -60, -110 10 C -130 60, -60 90, -6 30 Z" fill="url(#wing)" opacity="0.95"/>
+    <path d="M 0 0 C 70 -90, 140 -60, 110 10 C 130 60, 60 90, 6 30 Z" fill="url(#wing2)" opacity="0.95"/>
+    <g fill="#ffffff" opacity="0.7">
+      <circle cx="-78" cy="-18" r="10"/><circle cx="78" cy="-18" r="10"/>
+      <circle cx="-62" cy="34" r="6"/><circle cx="62" cy="34" r="6"/>
+    </g>
+    <ellipse cx="0" cy="12" rx="8" ry="40" fill="#3B2A5A"/>
+    <path d="M -4 -24 q -10 -24 -24 -30 M 4 -24 q 10 -24 24 -30" fill="none" stroke="#3B2A5A" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="-28" cy="-54" r="4" fill="#3B2A5A"/><circle cx="28" cy="-54" r="4" fill="#3B2A5A"/>
+  </g>
+
+  <!-- sparkles -->
+  <g fill="#FFB86C">
+    <path d="M 980 70 l 4 12 l 12 4 l -12 4 l -4 12 l -4 -12 l -12 -4 l 12 -4 Z"/>
+    <path d="M 1060 210 l 3 9 l 9 3 l -9 3 l -3 9 l -3 -9 l -9 -3 l 9 -3 Z"/>
+    <path d="M 1010 160 l 2 6 l 6 2 l -6 2 l -2 6 l -2 -6 l -6 -2 l 6 -2 Z"/>
+  </g>
+
+  <!-- wordmark -->
+  <text x="330" y="305" font-family="ui-rounded, 'SF Pro Rounded', 'Segoe UI', system-ui, sans-serif" font-size="64" font-weight="800" fill="#3B2A5A" letter-spacing="-1">careerpillar</text>
+  <text x="334" y="338" font-family="ui-rounded, 'SF Pro Rounded', 'Segoe UI', system-ui, sans-serif" font-size="20" font-weight="500" fill="#6B5B8E">caterpillar today. something with wings later.</text>
+</svg>
