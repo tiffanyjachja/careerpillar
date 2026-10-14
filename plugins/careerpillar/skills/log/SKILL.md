@@ -59,13 +59,12 @@ Omit `period` if not applicable. Then:
 2. Confirm with: the title and competencies; how many entries they now have in each mapped competency and whether this fills a GAP, thickens a THIN, or adds to a STRONG area toward `targetLevel`; one specific sentence of encouragement that references the actual work.
 3. If `careerDirection` exists in the profile, say in one line whether this entry is evidence for that path.
 
-## Level signals (summary only; the matrix file is canonical)
+## Level signals
 
-- IC3: the goal is clear, the approach is not; team-scoped.
-- IC4: finds root causes, breaks work down, turns requirements into results; influence within the team.
-- IC5: architecture decisions, multi-team impact, removes bottlenecks, weighs short- against long-term.
-- IC6: cross-team or org-level strategy; turns ambiguity into a coherent plan; frames impact in business terms.
-- IC7: org-level clarity; handles escalations; simplifies large systems.
-- M3: team execution; technical lead; accountability; engineering roadmap.
-- M4: multi-team coordination; design reviews; measurable technical excellence.
-- M5: org-wide strategy; organization-level decisions; succession planning.
+The matrix file is canonical; do not carry level summaries from any other ladder, and use only the level names it defines. To suggest a level, read the descriptors for `currentLevel` and `targetLevel` from the loaded matrix and compare the entry against the three things that separate adjacent levels in almost every ladder:
+
+- **Reach:** how far the influence goes (self, the team, several teams, the organization).
+- **Initiative:** who decided the work needed doing (assigned, or seen and proposed).
+- **Horizon:** how long the effect lasts (a task, a quarter, years).
+
+Quote the descriptor the entry matches and say why in one line.

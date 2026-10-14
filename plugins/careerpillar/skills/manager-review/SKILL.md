@@ -69,7 +69,7 @@ Produce the Working Assessment below. Rules for the writing:
 Answer each with YES / NO / PARTIAL and the evidence.
 
 1. **Operating at target level already?** From Step 3, not from tags. Name the entries either way.
-2. **Scope signal correct?** Stakeholder patterns against the level. IC5 or M4 needs multi-team influence; IC6 or M5 needs org-level reach. If every stakeholder is team or product, say it.
+2. **Scope signal correct?** Read the Scope descriptor (or the nearest equivalent) for `targetLevel` in the loaded matrix and compare it with the stakeholder pattern across the carrying set. If the descriptor speaks of several teams or the organization and every stakeholder is team or product, say it, quoting the descriptor. Use the matrix's own level names; never import level names from another ladder.
 3. **Evidence is recent?** Entries in the last six months by work date.
 4. **All competency areas covered?** List any with zero entries. A blank competency is a liability in committee.
 5. **Peer feedback lined up?** Read `peerFeedback[]`: received count, cross-functional count, levels against the proposed level where the company requires it. Empty or short is a blocker; point to `/careerpillar:peer-feedback`.

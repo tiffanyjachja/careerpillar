@@ -39,7 +39,7 @@ Last 3 entries with date, title, and competency tags.
 - If most entries share one `date` or a few days, say the data looks back-filled and recency cannot be read from it; suggest `/careerpillar:backfill` to repair dates from PR history.
 
 ### Scope signal
-Read `stakeholders` across entries. Count entries with cross-team or executive stakeholders versus team-only versus empty. For IC5+ targets, cross-team influence is the question the committee asks; say plainly whether the data shows it. If stakeholders are empty on many entries, the field needs filling before any scope claim can be made.
+Read `stakeholders` across entries. Count entries with cross-team or executive stakeholders versus team-only versus empty. Where the matrix's `targetLevel` descriptors call for influence beyond one team, that is the question the committee asks; quote the descriptor and say plainly whether the data shows it. If stakeholders are empty on many entries, the field needs filling before any scope claim can be made.
 
 ### Evidence quality
 - Entries with at least one link, and the total link count
@@ -56,7 +56,7 @@ The matrix is **not** embedded here. Resolve it in this order:
 1. If `~/careerpillar-matrix.json` (or `~/eng-tracker-matrix.json`, the previous name) exists, read it and use it. This is how a company plugs in its own leveling matrix (same shape as the default; see below). Tell the user once that you are using their custom matrix.
 2. Otherwise read the default from `${CLAUDE_PLUGIN_ROOT}/matrix.js` (the `DEFAULT_MATRIX` object). If that path is unavailable, look for `matrix.js` next to this skill's plugin root.
 
-Shape: `{ IC: { <Competency>: { <Level>: "<descriptor>" } }, Manager: { ... } }`. IC levels run IC2–IC8; Manager levels run M3–M6. Competency names must match the ones used in the profile's `competencies` arrays.
+Shape: `{ IC: { <Competency>: { <Level>: "<descriptor>" } }, Manager: { ... } }`. Level keys are whatever the loaded matrix defines (the default ships IC2–IC8 and M3–M6; a company matrix may use its own keys and `levelNames` for titles). Read the keys from the file; never assume them. Competency names must match the ones used in the profile's `competencies` arrays.
 
 For each competency, quote the descriptor for the user's **target level** verbatim so they know what "good" looks like, and use the descriptor for their **current level** to judge whether an entry is really target-level work or current-level work with a bigger label.
 

@@ -23,11 +23,11 @@ Look at all their accomplishments and identify:
 ### 2. Gap-to-target assessment
 For each competency at their target level, assess:
 - Do they have at least 2-3 strong entries?
-- Do the entries actually match the target level language, or do they describe IC3/IC4 work dressed up as IC5?
+- Do the entries actually match the target-level language, or do they describe current-level work wearing the target-level label? Judge against the matrix text for both levels.
 - Are there entries where they're actually operating above their target level? (note these — they strengthen the case)
 
 ### 3. Scope signal
-Look at stakeholder patterns. If all their stakeholders are "Team" and "Product Owner" and they are targeting IC5+, that is a gap — IC5 means multi-team influence. Call it out directly.
+Read what the matrix says about scope at `targetLevel`. If it calls for influence beyond one team and every stakeholder is "Team" or "Product Owner", that is a gap. Call it out directly and quote the descriptor.
 
 ### 4. Recency
 Promo cases need recent evidence. Use `date` (the work date, per `${CLAUDE_PLUGIN_ROOT}/SCHEMA.md`). Flag anything older than 6 months as potentially stale. If most entries are from more than 6 months ago, say so. If most entries share one date, the data is back-filled and you cannot read recency from it; say so and suggest `/careerpillar:backfill`.
