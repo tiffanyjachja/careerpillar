@@ -14,7 +14,11 @@
 Log the work you actually did, map it to a competency matrix, work out what kind of engineer you want to become, and walk into your review with receipts.</p>
 
 <p align="center">
-  <a href="index.html">Landing page</a> · <a href="app.html">Dashboard</a> · <a href="#skills">Skills</a> · <a href="#customizing-for-your-company">Bring your own ladder</a>
+  <a href="https://tiffanyjachja.github.io/careerpillar/"><strong>🦋 tiffanyjachja.github.io/careerpillar</strong></a>
+</p>
+
+<p align="center">
+  <a href="https://tiffanyjachja.github.io/careerpillar/">Landing page</a> · <a href="https://tiffanyjachja.github.io/careerpillar/app.html">Dashboard</a> · <a href="#skills">Skills</a> · <a href="#customizing-for-your-company">Bring your own ladder</a>
 </p>
 
 ---
@@ -33,8 +37,8 @@ Everything stays on your machine. The dashboard keeps data in your browser's loc
 
 | Path | Purpose |
 |---|---|
-| `index.html` | Landing page. A scroll-driven tour of the project. |
-| `app.html` | Visual dashboard. Open it in any browser, no server needed. |
+| `index.html` | Landing page. A scroll-driven tour of the project. Live at [tiffanyjachja.github.io/careerpillar](https://tiffanyjachja.github.io/careerpillar/). |
+| `app.html` | Visual dashboard. Open it in any browser, no server needed, or use the [hosted copy](https://tiffanyjachja.github.io/careerpillar/app.html). Data stays in your browser either way. |
 | `plugins/careerpillar/` | Claude Code plugin with thirteen skills (`/careerpillar:*`) |
 | `plugins/careerpillar/matrix.js` | The default competency matrix, shared by the dashboard and the skills |
 | `plugins/careerpillar/packet-template.md` | Default promotion-packet sections; override with your company's form |
