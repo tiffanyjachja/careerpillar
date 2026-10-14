@@ -24,15 +24,17 @@
     --ink-soft: #6b4f85;
     --card: #ffffff;
     --shadow: 0 12px 0 -6px rgba(230, 61, 140, .22), 0 20px 40px -20px rgba(124, 92, 230, .35);
+    --hl: var(--butter);
+    --ink-fixed: #3b2252;   /* stays dark in both modes: text on butter/peach/mint */
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --cream: #1d1430; --ink: #fff3fa; --ink-soft: #d7c6ef; --card: #2a1d44;
+      --cream: #1d1430; --ink: #fff3fa; --ink-soft: #d7c6ef; --card: #2a1d44; --hl: rgba(255, 95, 168, .45);
       --shadow: 0 12px 0 -6px rgba(255, 95, 168, .25), 0 20px 40px -20px rgba(0,0,0,.6);
     }
   }
   :root[data-theme="dark"] {
-    --cream: #1d1430; --ink: #fff3fa; --ink-soft: #d7c6ef; --card: #2a1d44;
+    --cream: #1d1430; --ink: #fff3fa; --ink-soft: #d7c6ef; --card: #2a1d44; --hl: rgba(255, 95, 168, .45);
     --shadow: 0 12px 0 -6px rgba(255, 95, 168, .25), 0 20px 40px -20px rgba(0,0,0,.6);
   }
 
@@ -64,9 +66,9 @@
   .pill { display: inline-flex; align-items: center; gap: .4em; padding: .35em .9em; border-radius: 999px; font-weight: 800; font-size: .85rem; background: var(--card); color: var(--ink); border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); }
   .pill.pink { background: var(--bubblegum); color: #fff; }
   .pill.lilac { background: var(--lilac); color: #fff; }
-  .pill.peach { background: var(--peach); }
-  .pill.mint { background: var(--mint); }
-  .pill.butter { background: var(--butter); }
+  .pill.peach { background: var(--peach); color: var(--ink-fixed); }
+  .pill.mint { background: var(--mint); color: var(--ink-fixed); }
+  .pill.butter { background: var(--butter); color: var(--ink-fixed); }
   .sticker { position: absolute; font-size: 2.2rem; filter: drop-shadow(0 4px 0 rgba(59,34,82,.15)); user-select: none; }
 
   /* hero */
@@ -90,7 +92,7 @@
   /* statement */
   .statement { padding: 18vh 0; text-align: center; }
   .statement h2 { font-size: clamp(2rem, 6vw, 4rem); font-weight: 700; line-height: 1.08; margin: 0 auto; max-width: 18ch; }
-  .statement .hl { background: linear-gradient(transparent 55%, var(--butter) 55%); padding: 0 .1em; }
+  .statement .hl { background: linear-gradient(transparent 55%, var(--hl) 55%); padding: 0 .1em; border-radius: .15em; }
   .statement p { max-width: 54ch; margin: 24px auto 0; color: var(--ink-soft); font-size: 1.15rem; }
 
   /* sticky scrolly */
@@ -125,7 +127,7 @@
   .card .emoji { font-size: 1.8rem; }
   .card h4 { margin: 8px 0 6px; font-family: ui-monospace, Menlo, monospace; font-size: .95rem; }
   .card p { margin: 0; font-size: .95rem; color: var(--ink-soft); }
-  .card .who { position: absolute; top: 12px; right: 12px; font-size: .7rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; padding: .2em .6em; border-radius: 999px; background: var(--butter); color: var(--ink); border: 2px solid var(--ink); }
+  .card .who { position: absolute; top: 12px; right: 12px; font-size: .7rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; padding: .2em .6em; border-radius: 999px; background: var(--butter); color: var(--ink-fixed); border: 2px solid var(--ink); }
 
   /* why */
   .why { padding: 10vh 0; }
@@ -144,7 +146,7 @@
   .btn:hover { transform: translate(-2px,-2px); box-shadow: 7px 7px 0 var(--ink); }
   .btn.primary { background: var(--bubblegum); color: #fff; }
   .btn.secondary { background: var(--lilac); color: #fff; }
-  pre.install { text-align: left; display: inline-block; margin: 0 auto; background: var(--ink); color: #ffe4f3; padding: 18px 22px; border-radius: 18px; font-size: .9rem; line-height: 1.6; max-width: 100%; overflow-x: auto; }
+  pre.install { text-align: left; display: inline-block; margin: 0 auto; background: #3b2252; color: #ffe4f3; border: 3px solid var(--ink); padding: 18px 22px; border-radius: 18px; font-size: .9rem; line-height: 1.6; max-width: 100%; overflow-x: auto; }
   pre.install .c { color: #c9b8e8; }
   footer { text-align: center; padding: 40px 0 60px; color: var(--ink-soft); font-size: .95rem; }
   footer a { font-weight: 800; }
