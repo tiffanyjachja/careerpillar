@@ -33,11 +33,11 @@ Ask these questions one at a time. Don't rush. Each answer shapes the review.
 
 **Q2 — What the team celebrates**
 "What does the team or close peers specifically appreciate about working with [name]? Any moments, patterns, or things they've said?"
-(Probe for specifics — behaviors, not traits)
+(Probe for specifics — behaviors, not traits. When an answer names a piece of work, climb two rungs of `${CLAUDE_PLUGIN_ROOT}/impact-ladder.md`: what changed because of it, and who noticed.)
 
 **Q3 — Peer or partner praise**
 "Has anyone — cross-functional partners, other leads, engineers they've worked with — said something specific about [name]? Any names?"
-(Named praise carries more weight than synthesized praise)
+(Named praise carries more weight than synthesized praise. If the praise is an adjective, ask what the person did that earned it.)
 
 **Q4 — The context**
 "What was hard or constrained about this review period for them? What did they have to navigate that wasn't in their control?"

@@ -48,6 +48,7 @@ Everything stays on your machine. The dashboard keeps data in your browser's loc
 | `plugins/careerpillar/strengths.md` | Twenty plain-language working patterns, with standing and combinations |
 | `plugins/careerpillar/compass.js` | Values and strengths as data, shared by the dashboard and the skills |
 | `plugins/careerpillar/SCHEMA.md` | The profile JSON schema, the XYZ entry shape, and the quality rules |
+| `plugins/careerpillar/impact-ladder.md` | The follow-up-question method (output → outcome → beneficiary → evidence → counterfactual → what it unlocked) used by manager-review, log, and peer-review |
 | `plugins/careerpillar/hooks/`, `scripts/check-profile.js` | Hook that enforces the entry shape on every profile write; also a CLI checker |
 
 ## Getting started
@@ -121,7 +122,7 @@ The four stages are also how the tool is organized. Each maps to a handful of sk
 | `/careerpillar:suggest` | Prioritized advice on what to focus on next: pattern analysis, scope signals, one concrete action |
 | `/careerpillar:export` | Generate a promotion packet (from a pluggable template, with a References section), performance review, or self-review summary |
 | `/careerpillar:vibe-check` | Quarterly pulse check across 8 dimensions; produces a snapshot and one concrete action |
-| `/careerpillar:manager-review` | Review a direct report's tracker; 7-point promo-readiness check and full review draft |
+| `/careerpillar:manager-review` | Review a direct report's tracker as their sponsor: intake on the business context, triage, an impact dig (one follow-up question at a time until the impact and the level are clear), then bullets, growth lens, 7-point promo-readiness check, and a write-back that leaves the tracker better |
 | `/careerpillar:peer-review` | Write a 360-style performance review; collects peer input conversationally, produces a sponsor-quality document |
 | `/careerpillar:peer-feedback` | Managers: plan who to ask for packet feedback, draft the ask, track status, store quotes verbatim |
 

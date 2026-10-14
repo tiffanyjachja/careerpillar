@@ -48,9 +48,13 @@ All skills read and write `~/careerpillar-profile.json`. This file is the single
         { "url": "https://linear.app/org/issue/PAY-311", "label": "approved proposal" }
       ],
 
-      "tags": ["games", "admin-tooling", "ai"]
+      "tags": ["games", "admin-tooling", "ai"],
                                       // free text. Convention: tag "ai" for AI-literacy / AI-adoption evidence
                                       // (tool use, harness work, reviewer agents, upskilling peers).
+
+      "openQuestions": ["How many lineup tickets per week before and after?", "What would have shipped later without this?"]
+                                      // optional. Impact-ladder rungs a manager could not answer, written for the engineer.
+                                      // /careerpillar:log asks them first the next time the entry is touched, then removes the answered ones.
     }
   ],
 
