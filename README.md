@@ -150,7 +150,7 @@ Each accomplishment has `id`, `date` (when the work landed), `loggedAt`, `title`
 
 If you used this project under its previous name, the skills still read `~/eng-tracker-profile.json` and the matching override files until you rename them.
 
-Every entry follows one shape: **accomplished X, as measured by Y, by doing Z.** A plugin hook checks the profile each time Claude Code writes it, blocks writes that break the shape, and hands back the list of what to fix. The same checker runs by hand with `node plugins/careerpillar/scripts/check-profile.js ~/careerpillar-profile.json`. Details in [`SCHEMA.md`](plugins/careerpillar/SCHEMA.md).
+Every entry follows one shape: **accomplished X, as measured by Y, by doing Z.** A plugin hook checks the profile each time Claude Code writes it, blocks writes that break the shape or duplicate an existing entry, flags entries that should be bundled or given a time span, and hands back the list of what to fix. The same checker runs by hand with `node plugins/careerpillar/scripts/check-profile.js ~/careerpillar-profile.json`. Details in [`SCHEMA.md`](plugins/careerpillar/SCHEMA.md).
 
 Profile files contain real performance information about real people. The repo's `.gitignore` excludes `*profile*.json`; keep it that way.
 

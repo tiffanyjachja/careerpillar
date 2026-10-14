@@ -24,7 +24,7 @@ All skills read and write `~/careerpillar-profile.json`. This file is the single
       "id": "k3j9x2ab",               // 8 random alphanumerics
       "date": "2026-08-14",           // when the work LANDED (merged, shipped, presented). Not when it was logged.
       "loggedAt": "2026-09-16",       // when this entry was written. Optional.
-      "period": { "start": "2026-06-01", "end": "2026-08-14" },   // optional, for multi-month work
+      "period": { "start": "2026-06-01", "end": "2026-08-14" },   // optional. Work that spanned more than two weeks: date = period.end, one entry for the whole span
 
       "title": "Shipped reviewed, auditable config publishing for the checkout service",
                                       // action-verb phrase, third person, no "I", <= 90 chars
@@ -123,7 +123,7 @@ Bullets in exported documents are rendered in the same order: verb and what, for
 
 ## Enforcement
 
-The plugin ships a hook (`hooks/hooks.json`) that runs `scripts/check-profile.js` whenever the profile file is written or edited from Claude Code. A write that breaks a rule is blocked and the problems are handed back, so the entry gets fixed instead of saved. Warnings (a metric with no number, evidence that is only a Slack DM) are reported but do not block.
+The plugin ships a hook (`hooks/hooks.json`) that runs `scripts/check-profile.js` whenever the profile file is written or edited from Claude Code. A write that breaks a rule is blocked and the problems are handed back, so the entry gets fixed instead of saved. It also compares entries with each other: identical titles, or shared evidence with overlapping titles, are blocked as duplicates; similar entries close in time are flagged as bundle candidates; spans without a `period` and one-sitting backfills (many entries on one date) are flagged, with a count of entries by quarter. Warnings do not block.
 
 The same checker runs by hand or in CI:
 
@@ -135,7 +135,8 @@ Exit code 0 is clean, 2 means violations, 1 means it could not run. The rules it
 
 ## Quality rules the skills enforce when writing entries
 
-1. `date` is when the work landed. If the user is back-filling, ask for or derive the real date (PR merge date, launch date). Never default to today.
+1. `date` is when the work landed. If the user is back-filling, ask for or derive the real date (PR merge date, launch date). Never default to today. Work that spanned more than two weeks gets a `period` and `date` equal to `period.end`; it stays one entry, not one per month.
+8. No two entries describe the same work. Shared evidence plus overlapping titles is a duplicate; merge links and stakeholders into one entry. The checker blocks exact duplicates and flags bundle candidates.
 2. `title` starts with a verb in past tense, third person, no "I". Bad: "I unblock release launches." Good: "Unblocked release launches by owning the bug-bash and ship calls".
 3. `impact` names a beneficiary (team, users, business) and, where one exists, a number. If no number exists, say so in `metrics` rather than leaving the reader to wonder.
 4. `stakeholders` is never empty. If the work was truly solo with no consumer, write `["self"]` so the scope check reads it as solo on purpose.
