@@ -47,7 +47,8 @@ Everything stays on your machine. The dashboard keeps data in your browser's loc
 | `plugins/careerpillar/values.md` | The values sort: method, stance, and how to read the result |
 | `plugins/careerpillar/strengths.md` | Twenty plain-language working patterns, with standing and combinations |
 | `plugins/careerpillar/compass.js` | Values and strengths as data, shared by the dashboard and the skills |
-| `plugins/careerpillar/SCHEMA.md` | The profile JSON schema and the quality rules the skills enforce |
+| `plugins/careerpillar/SCHEMA.md` | The profile JSON schema, the XYZ entry shape, and the quality rules |
+| `plugins/careerpillar/hooks/`, `scripts/check-profile.js` | Hook that enforces the entry shape on every profile write; also a CLI checker |
 
 ## Getting started
 
@@ -147,6 +148,8 @@ The dashboard and the skills share one file: `~/careerpillar-profile.json`.
 Each accomplishment has `id`, `date` (when the work landed), `loggedAt`, `title`, `action`, `impact`, `metrics`, `competencies`, `level` (self-assessed), optional `assessedLevel`, `stakeholders`, `links` (one object per piece of evidence), and `tags`. The profile also holds `peerFeedback[]` and an optional `careerDirection`. Full schema and quality rules: [`plugins/careerpillar/SCHEMA.md`](plugins/careerpillar/SCHEMA.md).
 
 If you used this project under its previous name, the skills still read `~/eng-tracker-profile.json` and the matching override files until you rename them.
+
+Every entry follows one shape: **accomplished X, as measured by Y, by doing Z.** A plugin hook checks the profile each time Claude Code writes it, blocks writes that break the shape, and hands back the list of what to fix. The same checker runs by hand with `node plugins/careerpillar/scripts/check-profile.js ~/careerpillar-profile.json`. Details in [`SCHEMA.md`](plugins/careerpillar/SCHEMA.md).
 
 Profile files contain real performance information about real people. The repo's `.gitignore` excludes `*profile*.json`; keep it that way.
 

@@ -1,0 +1,29 @@
+{
+  "description": "Enforces the entry rules in SCHEMA.md (the XYZ shape: accomplished X, as measured by Y, by doing Z) whenever the careerpillar profile is written. A write that breaks a rule is blocked with the list of problems; an edit that leaves the file broken is reported back so it gets fixed.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/check-profile.js\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/check-profile.js\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

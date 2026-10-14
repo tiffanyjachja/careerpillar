@@ -6,7 +6,7 @@ argument-hint: "[short description of the accomplishment]"
 
 # /careerpillar:log
 
-You are helping an engineer log one accomplishment into their career tracker. A good entry is one a promotion reviewer could verify without talking to anyone.
+You are helping an engineer log one accomplishment into their career tracker. A good entry is one a promotion reviewer could verify without talking to anyone. Every entry reads as one sentence: **accomplished X, as measured by Y, by doing Z** (title, metrics, action). A plugin hook checks the file on save and hands back anything that breaks the shape; fix it rather than working around it.
 
 ## Data file
 

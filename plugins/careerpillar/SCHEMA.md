@@ -91,6 +91,44 @@ All skills read and write `~/careerpillar-profile.json`. This file is the single
 }
 ```
 
+## The shape of an entry
+
+Every entry should read as one sentence in the XYZ form: **accomplished X, as measured by Y, by doing Z.** The form comes from résumé writing (Laszlo Bock popularized it at Google), and it survives promotion committees for the same reason it survives recruiters: it forces an outcome, a number, and a method into the same breath.
+
+The fields carry the three parts:
+
+| Part | Field | Rule |
+|---|---|---|
+| **X**, what was accomplished | `title` | Past-tense verb first, third person, no "I", under 90 characters, names the system or surface |
+| **Y**, as measured by | `metrics[]` | At least one item. A number, a before/after, or the literal `"none available"` so the gap is visible |
+| **Z**, by doing | `action` | Two to four sentences on what was done and what was hard |
+| who was better off | `impact` | Names a beneficiary (team, users, business) and what changed for them |
+
+Worked example, as one sentence and as fields:
+
+> Cut inbox notification lag from 12 to 30 minutes to under one minute for large broadcasts (Y), by raising the writer Lambda's memory and concurrency and adding a duplicate-send guard (Z).
+
+```jsonc
+{ "title": "Cut inbox notification lag for large broadcasts",
+  "metrics": ["12 to 30 min lag → under 1 min"],
+  "action": "Found the inbox writer Lambda hitting its 128 MB limit at 10 concurrent S3 writes during large sends. Raised memory and concurrency, added a duplicate-send guard in shadow mode, and verified on the next broadcast.",
+  "impact": "Users see breaking-news pushes in their inbox when they arrive, not half an hour later. Editorial stopped filing lag reports." }
+```
+
+Bullets in exported documents are rendered in the same order: verb and what, for whom, the number in brackets, the evidence in parentheses.
+
+## Enforcement
+
+The plugin ships a hook (`hooks/hooks.json`) that runs `scripts/check-profile.js` whenever the profile file is written or edited from Claude Code. A write that breaks a rule is blocked and the problems are handed back, so the entry gets fixed instead of saved. Warnings (a metric with no number, evidence that is only a Slack DM) are reported but do not block.
+
+The same checker runs by hand or in CI:
+
+```bash
+node plugins/careerpillar/scripts/check-profile.js ~/careerpillar-profile.json
+```
+
+Exit code 0 is clean, 2 means violations, 1 means it could not run. The rules it enforces are the ones below.
+
 ## Quality rules the skills enforce when writing entries
 
 1. `date` is when the work landed. If the user is back-filling, ask for or derive the real date (PR merge date, launch date). Never default to today.
