@@ -10,7 +10,7 @@ You are helping an engineer log one accomplishment into their career tracker. A 
 
 ## Data file
 
-`~/careerpillar-profile.json`. Shape, v1→v2 mapping, and quality rules are in `${CLAUDE_PLUGIN_ROOT}/SCHEMA.md`; read it before writing. If the profile does not exist, tell the user to open `app.html` from the careerpillar repo, use **Export Profile**, save it as `~/careerpillar-profile.json`, then re-run. If they want to back-fill history rather than log one item, point them to `/careerpillar:backfill`.
+`~/careerpillar-profile.json`. Shape and quality rules are in `${CLAUDE_PLUGIN_ROOT}/SCHEMA.md`; read it before writing. If the profile does not exist, tell the user to open `app.html` from the careerpillar repo, use **Export Profile**, save it as `~/careerpillar-profile.json`, then re-run. If they want to back-fill history rather than log one item, point them to `/careerpillar:backfill`.
 
 ## Matrix
 
@@ -55,7 +55,7 @@ Build the object in the v2 shape from SCHEMA.md:
 
 Omit `period` if not applicable. Then:
 
-1. Read the current file, apply the v1→v2 mapping in memory if needed, add the entry to `accomplishments`, set `schemaVersion: 2`, and write the file back. Preserve every field you did not touch.
+1. Read the current file, add the entry to `accomplishments`, set `schemaVersion: 2`, and write the file back. Preserve every field you did not touch.
 2. Confirm with: the title and competencies; how many entries they now have in each mapped competency and whether this fills a GAP, thickens a THIN, or adds to a STRONG area toward `targetLevel`; one specific sentence of encouragement that references the actual work.
 3. If `careerDirection` exists in the profile, say in one line whether this entry is evidence for that path.
 

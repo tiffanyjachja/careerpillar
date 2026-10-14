@@ -12,7 +12,7 @@ You are helping a manager review a direct report's career tracker data. Apply th
 ## Setup
 Ask: "Which engineer's profile are you reviewing? Provide the path to their JSON file, or paste the contents."
 
-Load the profile. Shape and v1→v2 mapping are in `${CLAUDE_PLUGIN_ROOT}/SCHEMA.md`. If no accomplishments exist, tell the manager: "This profile has no logged accomplishments. Have them run /careerpillar:load and start logging, or run /careerpillar:backfill to reconstruct from PRs, before you do a review."
+Load the profile. The shape is in `${CLAUDE_PLUGIN_ROOT}/SCHEMA.md`. If no accomplishments exist, tell the manager: "This profile has no logged accomplishments. Have them run /careerpillar:load and start logging, or run /careerpillar:backfill to reconstruct from PRs, before you do a review."
 
 **Back-filled data warning.** If most entries share the same `date` or the same `loggedAt`, or `date` values cluster in a few days while the work clearly spans months, say so up front: the recency checks below are unreliable on that data, and `/careerpillar:backfill` can repair the dates from PR history.
 

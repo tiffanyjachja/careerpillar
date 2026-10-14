@@ -10,7 +10,7 @@ You are generating a career document from an engineer's tracker data. The packet
 
 ## Inputs
 
-1. **Profile:** `~/careerpillar-profile.json`. Shape and v1→v2 rules are in `${CLAUDE_PLUGIN_ROOT}/SCHEMA.md`. If the file is missing, tell them to open `app.html` from the careerpillar repo, use **Export Profile**, save it as `~/careerpillar-profile.json`, then re-run.
+1. **Profile:** `~/careerpillar-profile.json`. The shape is in `${CLAUDE_PLUGIN_ROOT}/SCHEMA.md`. If the file is missing, tell them to open `app.html` from the careerpillar repo, use **Export Profile**, save it as `~/careerpillar-profile.json`, then re-run.
 2. **Matrix:** `~/careerpillar-matrix.json` (or `~/eng-tracker-matrix.json`, the previous name) if it exists, otherwise `${CLAUDE_PLUGIN_ROOT}/matrix.js` (`DEFAULT_MATRIX`). Quote target-level descriptors from it; do not invent level language.
 3. **Packet template (promo only):** `~/careerpillar-packet-template.md` (or `~/eng-tracker-packet-template.md`) if it exists, otherwise `${CLAUDE_PLUGIN_ROOT}/packet-template.md`. The template defines the sections, their order, what to pull, and how to write each one. Follow it exactly; the company's form is the contract.
 
@@ -23,7 +23,7 @@ You are generating a career document from an engineer's tracker data. The packet
 
 ## Before writing
 
-- Build the evidence set: entries in range, each with `links[]` (map v1 `link` strings to `links` per SCHEMA.md).
+- Build the evidence set: entries in range, each with `links[]`.
 - Group entries into **three to five themes** by system, surface, or responsibility (not by competency name). Themes are what packets and reviews are organized around; competencies are how the tracker is organized. Reuse theme names consistently across sections.
 - Decide the level claim per entry: use `assessedLevel` when present, else `level`. Keep a list of entries whose self-assessed `level` is above `currentLevel` and lack `assessedLevel`; you will flag them at the end.
 - Note where `impact` has no number and `metrics` is empty.

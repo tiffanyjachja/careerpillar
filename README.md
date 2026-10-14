@@ -47,7 +47,7 @@ Everything stays on your machine. The dashboard keeps data in your browser's loc
 | `plugins/careerpillar/values.md` | The values sort: method, stance, and how to read the result |
 | `plugins/careerpillar/strengths.md` | Twenty plain-language working patterns, with standing and combinations |
 | `plugins/careerpillar/compass.js` | Values and strengths as data, shared by the dashboard and the skills |
-| `plugins/careerpillar/SCHEMA.md` | The profile JSON schema (v2) and compatibility rules |
+| `plugins/careerpillar/SCHEMA.md` | The profile JSON schema and the quality rules the skills enforce |
 
 ## Getting started
 
@@ -144,7 +144,7 @@ The dashboard and the skills share one file: `~/careerpillar-profile.json`.
 }
 ```
 
-Each accomplishment has `id`, `date` (when the work landed), `loggedAt`, `title`, `action`, `impact`, `metrics`, `competencies`, `level` (self-assessed), optional `assessedLevel`, `stakeholders`, `links` (one object per piece of evidence), and `tags`. The profile also holds `peerFeedback[]` and an optional `careerDirection`. Full schema and the v1 compatibility rules: [`plugins/careerpillar/SCHEMA.md`](plugins/careerpillar/SCHEMA.md). Files written by older versions still load.
+Each accomplishment has `id`, `date` (when the work landed), `loggedAt`, `title`, `action`, `impact`, `metrics`, `competencies`, `level` (self-assessed), optional `assessedLevel`, `stakeholders`, `links` (one object per piece of evidence), and `tags`. The profile also holds `peerFeedback[]` and an optional `careerDirection`. Full schema and quality rules: [`plugins/careerpillar/SCHEMA.md`](plugins/careerpillar/SCHEMA.md).
 
 If you used this project under its previous name, the skills still read `~/eng-tracker-profile.json` and the matching override files until you rename them.
 

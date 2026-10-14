@@ -802,7 +802,7 @@ function loadState() {
   } catch(e) {}
 }
 
-// Schema v2 compatibility (see plugins/careerpillar/SCHEMA.md).
+// Normalize imported profiles to the shape in plugins/careerpillar/SCHEMA.md (tolerates older or hand-edited files).
 // Skills may write links[] and loggedAt; the dashboard keeps the legacy string link in sync.
 function parseLinks(str) {
   return String(str || "").split(/[\s,]+/).filter(s => /^https?:\/\//i.test(s))

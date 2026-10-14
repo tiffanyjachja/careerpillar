@@ -1,10 +1,10 @@
-# Profile schema (v2)
+# Profile schema
 
 All skills read and write `~/careerpillar-profile.json`. This file is the single description of its shape. Skills link here instead of repeating it.
 
 **Previous file names.** This project used to be called eng-tracker. If `~/careerpillar-profile.json` does not exist but `~/eng-tracker-profile.json` does, read and write the old file and tell the user once that they can rename it. The same rule applies to the override files: `~/eng-tracker-matrix.json`, `~/eng-tracker-packet-template.md`, and `~/eng-tracker-paths.md` are honored when the `careerpillar-` versions are absent.
 
-**Compatibility rule:** files without `schemaVersion` are v1. Read them without complaint, apply the v1→v2 mapping below in memory, and write back v2 (set `schemaVersion: 2`). Never drop a field you do not understand; preserve it.
+**Version field:** `schemaVersion` is `2` and is written on every save. Treat a file without it as current. Never drop a field you do not understand; preserve it.
 
 ```jsonc
 {
@@ -23,7 +23,7 @@ All skills read and write `~/careerpillar-profile.json`. This file is the single
     {
       "id": "k3j9x2ab",               // 8 random alphanumerics
       "date": "2026-08-14",           // when the work LANDED (merged, shipped, presented). Not when it was logged.
-      "loggedAt": "2026-09-16",       // when this entry was written. Optional in v1 files.
+      "loggedAt": "2026-09-16",       // when this entry was written. Optional.
       "period": { "start": "2026-06-01", "end": "2026-08-14" },   // optional, for multi-month work
 
       "title": "Shipped reviewed, auditable config publishing for the checkout service",
@@ -43,7 +43,7 @@ All skills read and write `~/careerpillar-profile.json`. This file is the single
                                       // who was involved or affected. Include cross-team and executive stakeholders
                                       // explicitly; the scope-signal check reads this field.
 
-      "links": [                      // evidence. Replaces the v1 string `link`.
+      "links": [                      // evidence. One object per link.
         { "url": "https://github.com/org/repo/pull/3137", "label": "PR 3137 config editor" },
         { "url": "https://linear.app/org/issue/PAY-311", "label": "approved proposal" }
       ],
@@ -90,16 +90,6 @@ All skills read and write `~/careerpillar-profile.json`. This file is the single
   "customStakeholders": []            // dashboard convenience: extra stakeholder chips the user typed
 }
 ```
-
-## v1 → v2 mapping (apply in memory when reading a v1 file)
-
-| v1 | v2 |
-|---|---|
-| `link: "https://..."` (string, may contain several URLs separated by spaces, commas, or newlines) | `links: [{url, label}]` — split on whitespace/commas, one object per URL, label from the URL path (e.g. `PR 3137`) |
-| `date` | `date` (assume it is the work date), `loggedAt` absent |
-| `level` | `level` (self-assessed). `assessedLevel` absent. |
-| no `peerFeedback` | `[]` |
-| no `careerDirection` | absent |
 
 ## Quality rules the skills enforce when writing entries
 
