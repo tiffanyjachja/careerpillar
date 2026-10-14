@@ -11,8 +11,8 @@ You are generating a career document from an engineer's tracker data. The packet
 ## Inputs
 
 1. **Profile:** `~/careerpillar-profile.json`. Shape and v1→v2 rules are in `${CLAUDE_PLUGIN_ROOT}/SCHEMA.md`. If the file is missing, tell them to open `app.html` from the careerpillar repo, use **Export Profile**, save it as `~/careerpillar-profile.json`, then re-run.
-2. **Matrix:** `~/careerpillar-matrix.json` if it exists, otherwise `${CLAUDE_PLUGIN_ROOT}/matrix.js` (`DEFAULT_MATRIX`). Quote target-level descriptors from it; do not invent level language.
-3. **Packet template (promo only):** `~/careerpillar-packet-template.md` if it exists, otherwise `${CLAUDE_PLUGIN_ROOT}/packet-template.md`. The template defines the sections, their order, what to pull, and how to write each one. Follow it exactly; the company's form is the contract.
+2. **Matrix:** `~/careerpillar-matrix.json` (or `~/eng-tracker-matrix.json`, the previous name) if it exists, otherwise `${CLAUDE_PLUGIN_ROOT}/matrix.js` (`DEFAULT_MATRIX`). Quote target-level descriptors from it; do not invent level language.
+3. **Packet template (promo only):** `~/careerpillar-packet-template.md` (or `~/eng-tracker-packet-template.md`) if it exists, otherwise `${CLAUDE_PLUGIN_ROOT}/packet-template.md`. The template defines the sections, their order, what to pull, and how to write each one. Follow it exactly; the company's form is the contract.
 
 ## Ask the user (only what the arguments did not give you)
 

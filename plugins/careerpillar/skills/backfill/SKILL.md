@@ -10,7 +10,7 @@ You are helping an engineer (or their manager) reconstruct months of work into t
 
 ## Data file and schema
 
-`~/careerpillar-profile.json`, shape in `${CLAUDE_PLUGIN_ROOT}/SCHEMA.md`. Read it first; apply the v1→v2 mapping in memory. Matrix: `~/careerpillar-matrix.json` if present, else `${CLAUDE_PLUGIN_ROOT}/matrix.js`.
+`~/careerpillar-profile.json`, shape in `${CLAUDE_PLUGIN_ROOT}/SCHEMA.md`. Read it first; apply the v1→v2 mapping in memory. Matrix: `~/careerpillar-matrix.json` (or `~/eng-tracker-matrix.json`, the previous name) if present, else `${CLAUDE_PLUGIN_ROOT}/matrix.js`.
 
 ## Sources, in order of preference
 

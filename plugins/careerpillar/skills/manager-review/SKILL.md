@@ -3,7 +3,7 @@ name: manager-review
 description: Manager-side review of a direct report's tracker: polished accomplishment bullets, growth lens, future expectations, a 7-point promo-readiness check, and conversation prep. Use for 'review <name>'s tracker', 'is <name> ready for promo'.
 ---
 
-> **Matrix source:** read `~/careerpillar-matrix.json` if it exists, otherwise `${CLAUDE_PLUGIN_ROOT}/matrix.js` (`DEFAULT_MATRIX`). Quote target-level descriptors from it; do not invent level language.
+> **Matrix source:** read `~/careerpillar-matrix.json` (or `~/eng-tracker-matrix.json`, the previous name) if it exists, otherwise `${CLAUDE_PLUGIN_ROOT}/matrix.js` (`DEFAULT_MATRIX`). Quote target-level descriptors from it; do not invent level language.
 
 # /careerpillar:manager-review
 
@@ -16,7 +16,7 @@ Load the profile. Shape and v1→v2 mapping are in `${CLAUDE_PLUGIN_ROOT}/SCHEMA
 
 **Back-filled data warning.** If most entries share the same `date` or the same `loggedAt`, or `date` values cluster in a few days while the work clearly spans months, say so up front: the recency checks below are unreliable on that data, and `/careerpillar:backfill` can repair the dates from PR history.
 
-**Level assessment.** For each entry you cite, judge the level yourself against the matrix text (`~/careerpillar-matrix.json` if present, else `${CLAUDE_PLUGIN_ROOT}/matrix.js`). The engineer's `level` is their self-assessment. Offer at the end to write your judgments back as `assessedLevel` with `assessedBy: "manager"`, without changing `level`.
+**Level assessment.** For each entry you cite, judge the level yourself against the matrix text (`~/careerpillar-matrix.json` (or `~/eng-tracker-matrix.json`, the previous name) if present, else `${CLAUDE_PLUGIN_ROOT}/matrix.js`). The engineer's `level` is their self-assessment. Offer at the end to write your judgments back as `assessedLevel` with `assessedBy: "manager"`, without changing `level`.
 
 ---
 

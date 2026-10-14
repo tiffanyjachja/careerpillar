@@ -14,7 +14,7 @@ You are helping an engineer log one accomplishment into their career tracker. A 
 
 ## Matrix
 
-`~/careerpillar-matrix.json` if it exists, otherwise `${CLAUDE_PLUGIN_ROOT}/matrix.js` (`DEFAULT_MATRIX`). Show the target-level descriptor for each competency the user picks.
+`~/careerpillar-matrix.json` (or `~/eng-tracker-matrix.json`, the previous name) if it exists, otherwise `${CLAUDE_PLUGIN_ROOT}/matrix.js` (`DEFAULT_MATRIX`). Show the target-level descriptor for each competency the user picks.
 
 ## How to run the conversation
 

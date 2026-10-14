@@ -3,7 +3,7 @@ name: suggest
 description: Give prioritized, specific career advice from tracker data: pattern analysis, gap-to-target, scope signals, recency, and one concrete action for this week. Use for 'what should I focus on', 'how do I strengthen my promo case'.
 ---
 
-> **Matrix source:** read `~/careerpillar-matrix.json` if it exists, otherwise `${CLAUDE_PLUGIN_ROOT}/matrix.js` (`DEFAULT_MATRIX`). Quote target-level descriptors from it; do not invent level language.
+> **Matrix source:** read `~/careerpillar-matrix.json` (or `~/eng-tracker-matrix.json`, the previous name) if it exists, otherwise `${CLAUDE_PLUGIN_ROOT}/matrix.js` (`DEFAULT_MATRIX`). Quote target-level descriptors from it; do not invent level language.
 
 # /careerpillar:suggest
 

@@ -53,7 +53,7 @@ If `careerDirection` exists, show the archetype and the next experiment with its
 
 The matrix is **not** embedded here. Resolve it in this order:
 
-1. If `~/careerpillar-matrix.json` exists, read it and use it. This is how a company plugs in its own leveling matrix (same shape as the default; see below). Tell the user once that you are using their custom matrix.
+1. If `~/careerpillar-matrix.json` (or `~/eng-tracker-matrix.json`, the previous name) exists, read it and use it. This is how a company plugs in its own leveling matrix (same shape as the default; see below). Tell the user once that you are using their custom matrix.
 2. Otherwise read the default from `${CLAUDE_PLUGIN_ROOT}/matrix.js` (the `DEFAULT_MATRIX` object). If that path is unavailable, look for `matrix.js` next to this skill's plugin root.
 
 Shape: `{ IC: { <Competency>: { <Level>: "<descriptor>" } }, Manager: { ... } }`. IC levels run IC2–IC8; Manager levels run M3–M6. Competency names must match the ones used in the profile's `competencies` arrays.

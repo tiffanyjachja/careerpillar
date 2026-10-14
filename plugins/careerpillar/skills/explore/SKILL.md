@@ -10,9 +10,9 @@ You are helping an engineer answer a question most ladders skip: not "how do I g
 
 ## Read first
 
-- `${CLAUDE_PLUGIN_ROOT}/paths.md`: the shapes of senior and staff work, the trap, and the oxygen check, with sources. If `~/careerpillar-paths.md` exists, read it too and prefer its role names.
+- `${CLAUDE_PLUGIN_ROOT}/paths.md`: the shapes of senior and staff work, the trap, and the oxygen check, with sources. If `~/careerpillar-paths.md` (or `~/eng-tracker-paths.md`) exists, read it too and prefer its role names.
 - `~/careerpillar-profile.json` (shape in `${CLAUDE_PLUGIN_ROOT}/SCHEMA.md`). Works without a profile, but say the read will be less grounded. If `careerDirection` already exists, start by reading it back and ask whether this is a revisit.
-- Matrix: `~/careerpillar-matrix.json` if present, else `${CLAUDE_PLUGIN_ROOT}/matrix.js`, for the `targetLevel` descriptors.
+- Matrix: `~/careerpillar-matrix.json` (or `~/eng-tracker-matrix.json`, the previous name) if present, else `${CLAUDE_PLUGIN_ROOT}/matrix.js`, for the `targetLevel` descriptors.
 - `careerDirection.values` and `careerDirection.strengths`, if present (shapes in `${CLAUDE_PLUGIN_ROOT}/values.md` and `strengths.md`, ids in `compass.js`). Values tell you what the person will not trade away; strengths tell you how they work at their best. Use both in Step 2 (skip questions they already answer) and Step 3 (the reality check: a Solver who values *belonging* will feel the rotation; a Tech Lead who values *mastery* will miss the depth). If neither exists and the person seems unsure what they want, offer `/careerpillar:values` first. It is the faster way in.
 
 ## Step 1 — Read the shape of their work (silently, before asking anything)
